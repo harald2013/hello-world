@@ -39,6 +39,13 @@
 - Backup pruning MUST stay within report-example/production/ and MUST follow successful upload verification [ADR 0006].
 - Agents MUST verify restore, failed-release isolation, backup freshness monitoring, and failure notifications before claiming production acceptance [ADR 0006].
 
+## Browser UI — [ADR 0007](docs/adr/0007-simple-browser-ui.md)
+
+- The UI MUST use static assets in the API image and existing same-origin report APIs [ADR 0007].
+- UI assets MUST NOT contain secrets; browser API tokens MUST NOT enter URLs or persistent storage [ADR 0007].
+- The public UI shell MUST NOT expose application data or weaken report API authentication [ADR 0007].
+- UI results MUST be rendered as text and dependency polling MUST be bounded and initiated by user actions [ADR 0007].
+
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 
 - Agents MUST document architectural decisions in German ADRs under the applicable scope's `docs/adr/` directory [ADR 0002].

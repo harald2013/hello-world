@@ -9,6 +9,22 @@ API-Anwendung in Coolify abgerufen. Produktion auf Railway ist vorbereitet,
 aber noch nicht angelegt. Die Vorlage wird vor der Ableitung allgemeiner
 Development-MCP-Regeln praktisch erprobt.
 
+## Kleine Browseroberfläche
+
+Nach lokalem Start `http://127.0.0.1:18000/ui/` öffnen. Die Seite zeigt
+„Hello World“ und ein kleines Formular für Zahlen. Mit „Report erstellen“ startet
+sie einen Workflow und zeigt anschließend Anzahl, Summe, Minimum, Maximum und
+Mittelwert. Ein späteres „Status erneut prüfen“ lädt nur den angelegten Bericht.
+
+Lokal ist der API-Schlüssel optional. In Staging und Produktion den API-Schlüssel
+des jeweiligen API-Dienstes eingeben; er wird nicht dauerhaft im Browser
+abgelegt. Seite und Skripte enthalten keinen vorgegebenen Schlüssel. Die
+bestehende JSON-Route `/` und die API-Dokumentation `/docs` bleiben erhalten.
+Die öffentliche Produktionsoberfläche benötigt weiterhin gültiges HTTPS.
+
+Die UI-Dateien liegen im API-Image, also wird kein weiterer Container benötigt.
+Beim Laden der Seite werden keine Reports oder Dependency-Healthchecks abgefragt.
+
 ## Lokal starten
 
 Docker mit Compose v2 oder neuer ist erforderlich:
