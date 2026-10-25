@@ -37,6 +37,14 @@ jobs:
             docker tag "report-example-${role}:local" "$image"
             docker push "$image"
           done
+      - name: Build and check backup tooling
+        run: |
+          docker build --target backup -t report-example-backup:local .
+          docker run --rm --entrypoint pg_dump report-example-backup:local --version
+          docker run --rm --entrypoint python3 report-example-backup:local -c 'import boto3'
+          image="ghcr.io/${GITHUB_REPOSITORY,,}-backup:sha-${GITHUB_SHA}"
+          docker tag report-example-backup:local "$image"
+          docker push "$image"
       - if: failure()
         run: docker compose logs --tail 80
       - if: always()

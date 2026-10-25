@@ -43,8 +43,7 @@ See [README.md](README.md) for API usage and [deploy/](deploy/operations.md)
 for configuration. Staging uses individual images on workhorse. Production uses
 managed application hosting, Temporal Cloud and Neon. Read
 [.agents/infra/staging/coolify.md](.agents/infra/staging/coolify.md) for existing
-staging resources before using Coolify tools; production resources have not
-been provisioned.
+staging resources before using Coolify tools; production resources are listed in [.agents/infra/README.md](.agents/infra/README.md).
 
 ## Tool context
 
