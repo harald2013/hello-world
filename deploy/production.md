@@ -49,7 +49,12 @@ und die Compute-Auslastung in Neon vor Freigabe prüfen: ein dauerhaft aktiver
 
 ## Backup und Wiederherstellung
 
-Das Backupimage enthält PostgreSQL-16-Clients und boto3. Secrets stehen in
+Das Backupimage enthält PostgreSQL-16-Clients und boto3. Der vollständige lokale
+Archivtest läuft mit `docker run --rm -i --network report-example_default
+--entrypoint python3 report-example-backup:local < scripts/check_backup.py`
+(nach lokalem Build des Backup-Ziels). Er verwendet nur die feste lokale
+synthetische Datenbank und einen Speicher-Stub; die echte Cloud-Abnahme folgt
+separat. Secrets stehen in
 Umgebungsvariablen, nicht in Prozessargumenten oder Logs. Der Dump wird vor dem
 Upload mit pg_restore gelesen; anschließend werden Größe und SHA256-Metadaten
 am Objekt geprüft. Dies ersetzt keine echte Restore-Probe. Alte Dumps werden

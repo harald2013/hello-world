@@ -26,4 +26,5 @@ Default Workspace
 | api.report-example.ratzberger.net | 4cfafd53-0dce-493e-8201-8641bae11741 | custom domain | API port 8000; World4You CNAME to 1yha62x4.up.railway.app |
 
 All application services use Amsterdam (`europe-west4-drams3a`), one replica.
+Backup start command: `python3 /app/backup.py`; cron `0 */12 * * *` UTC; restart policy NEVER.
 Runtime secrets are Railway variables. Read deployment and certificate status live.

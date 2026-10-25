@@ -42,6 +42,7 @@ jobs:
           docker build --target backup -t report-example-backup:local .
           docker run --rm --entrypoint pg_dump report-example-backup:local --version
           docker run --rm --entrypoint python3 report-example-backup:local -c 'import boto3'
+          docker run --rm -i --network report-example_default --entrypoint python3 report-example-backup:local < scripts/check_backup.py
           image="ghcr.io/${GITHUB_REPOSITORY,,}-backup:sha-${GITHUB_SHA}"
           docker tag report-example-backup:local "$image"
           docker push "$image"

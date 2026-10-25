@@ -12,8 +12,7 @@
 - Worker-Digest nach erfolgreichem API-Deployment ausgerollt:
   ghcr.io/harald2013/hello-world-worker@sha256:70e3979beea9e0506b2cc488542fa723b510804188d6cf71cc20207aab7bf325.
 - Custom Domain api.report-example.ratzberger.net auf API-Port 8000 angelegt.
-- Nicht geheime Runtime-Variablen und R2-Ziel eingetragen. Kein erfolgreicher
-  Cloud-Deploymentlauf wird damit behauptet.
+- Runtime-Konfiguration und R2-Secrets sind eingetragen; Deploymentnachweise folgen unten.
 
 ## Deploymentnachweise
 
@@ -45,7 +44,28 @@ deshalb einen lokalen Unix-Socket. Der Backup-Code setzt jetzt einzelne
 PGHOST-/PGPORT-/PGUSER-/PGPASSWORD-/PGDATABASE-Variablen und prüft TLS weiterhin
 vollständig. Ein lokaler Gegenversuch reproduzierte den Socket-Fehler, und drei
 neue Regressionstests prüfen URL-Dekodierung und die strikte TLS-Konfiguration.
-Die korrigierte Image-Version und der erste erfolgreiche Upload sind noch zu prüfen.
+Die korrigierte Image-Version aus Revision 7b7f838232db6f570752eafbda3e2ed59de469da
+ist veröffentlicht (Image-Prüfung 40231699246 erfolgreich):
+`ghcr.io/harald2013/hello-world-backup@sha256:503d572aa9d4125bdb6280156051b4691c67566e5b755a4b21494c17a44f421b`.
+
+Einmallauf `e69168e3-63a1-4e65-b3c0-7f2787abf0c9` meldet am 25.10.2026 um
+20:42:06 UTC `Backup completed`. Das Archiv wurde in R2 gespeichert:
+`report-example/production/2026/10/25/204202-84dc9a9cf47546f9a9b5b865fddb1d02.dump`.
+SHA256: `72c72d74c07567cd065a033b787d38b80509b4d10f2737b410b2e1a3e6fe8344`.
+
+Restore-Lauf `c56bf2b9-d931-498e-97d3-632b6eb8837d` lädt das Archiv direkt im
+Railway-Container, prüft die SHA256 und spielt es ausschließlich in die frische
+Neon-Testdatenbank reports_restore_check_20261025 ein. Der Prozess meldet
+`Restore verified` und zwei Sekunden Laufzeit; anschließend wurde der bekannte
+Bericht über Neon separat mit Status completed und Summe 60 bestätigt.
+Die Testdatenbank wurde danach entfernt; die Datenbankliste enthält wieder nur reports. Es wurde kein Dump auf einen
+Entwicklerrechner übertragen. Dies ist eine erfolgreiche Probe für den kleinen
+Demobestand, keine pauschale RTO-Garantie für beliebige Datenmengen.
+
+Der normale Startbefehl ist wieder `python3 /app/backup.py`, Cron
+`0 */12 * * *` (UTC) und Restart-Policy NEVER. Kein permanenter Backup-Prozess.
+Ein erfolgreich registriertes Cron-Deployment allein beweist keinen Lauf;
+maßgeblich sind Ausführungslogs und das nachprüfbare Archiv.
 
 Die Neon-API meldet am neu angelegten Endpoint suspend_timeout_seconds=0.
 Explizites Setzen des Intervalls beim Projektanlegen wurde vom Free-Konto mit
@@ -68,7 +88,7 @@ Zertifikat. Nicht wiederholt neu anfordern, solange Railway keinen Retry erlaubt
 
 ## Offene Abnahme
 
-Authentifizierter HTTP-Report über die eigene Domain, R2-Upload, echte
-Wiederherstellung in isolierter Datenbank sowie
-Fehler- und Backup-Frischealarme stehen aus. Die 24-Stunden-Ziele sind daher noch
+Authentifizierter HTTP-Report über die eigene Domain, Fehler- und Backup-
+Frischealarme sowie Release-Fehlerisolation in einer separaten Testumgebung
+stehen aus. Upload und isolierte Wiederherstellungsprobe sind nachgewiesen. Die 24-Stunden-Ziele sind daher noch
 nicht als erfüllt nachgewiesen. Keine Fehlermigration gegen Produktion ausführen.

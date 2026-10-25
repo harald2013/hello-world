@@ -28,7 +28,9 @@ A successful cron deployment only proves the schedule was registered. Verify
 execution logs separately. For a one-off check, stage cronSchedule=null and the
 normal image start command, inspect the patch and accept it; restore the twelve-
 hour schedule after the check. Do not treat a redeploy without execution logs as
-a completed backup.
+a completed backup. A fresh staged configuration commit is required when changing
+between cron and one-off operation; redeploying an older cron build alone did
+not execute the task in this setup.
 
 ## References
 
