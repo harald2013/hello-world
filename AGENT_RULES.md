@@ -23,6 +23,13 @@
 - Worker releases MUST follow successful API pre-deploy completion; agents MUST NOT assume cross-service deployment ordering [ADR 0004].
 - Agents MUST verify migration success and rollback in containers and failed-release isolation on the target platform before claiming deployment acceptance [ADR 0004].
 
+## Stateful staging updates — [ADR 0005](docs/adr/0005-stateful-staging-updates.md)
+
+- Staging PostgreSQL updates MUST stop the existing container before starting its replacement [ADR 0005].
+- PostgreSQL containers MUST NOT concurrently mount the same data volume; Coolify MUST use consistent container naming for this application [ADR 0005].
+- Agents MUST verify replacement behavior and subsequent database access on the target host [ADR 0005].
+- Agents MUST preserve and document damaged volumes; fresh volumes MUST be limited to disposable initial setup data or an explicitly approved recovery [ADR 0005].
+
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 
 - Agents MUST document architectural decisions in German ADRs under the applicable scope's `docs/adr/` directory [ADR 0002].

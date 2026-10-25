@@ -1,18 +1,29 @@
 # Staging auf workhorse
 
-Diese Anleitung beschreibt das einzurichtende Setup. Dieses Repository enthält
-noch keine angelegten Coolify-Ressourcen. Bestehende IDP-Ressourcen werden nicht
-wiederverwendet oder geändert. Staging enthält ausschließlich synthetische Daten.
+Das Projekt `report-example` mit der Umgebung `staging` ist auf workhorse
+angelegt. Die tatsächlichen Ressourcen, UUIDs, Netzwerk-Aliase und privaten
+HTTPS-Adressen stehen in [COOLIFY.md](../COOLIFY.md). IDP dient als Beispiel
+für Image-Anwendungen; seine Dienste und Zugangsdaten werden nicht verwendet.
+Staging enthält ausschließlich synthetische Daten.
 
-Vor Coolify-Änderungen die aktuelle Instanzkonfiguration lesen. Beim Anlegen der
-ersten Ressourcen `/COOLIFY.md` aus der Development-MCP-Vorlage erstellen, reale
-UUIDs und stabile Imagequellen eintragen und mit `validate_coolify_md` prüfen.
-Keine UUIDs aus einem anderen Projekt als eigene Ressourcen übernehmen.
+Die Anwendung verwendet das nach dem Entfernen von `Infrastructure` erhaltene
+Netz `infrastructure-staging`. Der Name ist historisch; die fünf Anwendungen
+gehören zum Projekt `report-example`. Das Netz ist vom IDP-Anwendungsnetz
+getrennt. PostgreSQL erhält ein eigenes persistentes Volume.
+
+API: https://workhorse.tail8fba42.ts.net:18443/docs  
+Temporal UI: https://workhorse.tail8fba42.ts.net:18444/
+
+Beide Adressen sind nur im Tailnet erreichbar. Tailscale Serve leitet auf die
+Loopback-Bindings `127.0.0.1:18080` und `127.0.0.1:18081` weiter. PostgreSQL,
+Temporal und Worker haben weder Host-Port noch öffentliche Domain. Der
+API-Schlüssel liegt als Laufzeit-Secret `API_TOKEN` an der API-Anwendung in
+Coolify; zum Verwenden gezielt dort abrufen und nicht in Dokumentation kopieren.
 
 ## Einzelne Ressourcen
 
-In Coolify auf workhorse ein eigenes Projekt `report-example` mit Umgebung
-`staging` anlegen. Jede der folgenden Rollen wird eine eigenständige
+In Coolify auf workhorse das Projekt `report-example` mit Umgebung
+`staging` verwenden. Jede der folgenden Rollen wird eine eigenständige
 Docker-Image-Anwendung. Compose wird hier nicht verwendet.
 
 | Rolle | Imagequelle | Interner Alias | Port / Daten |
@@ -24,7 +35,8 @@ Docker-Image-Anwendung. Compose wird hier nicht verwendet.
 | Worker | `ghcr.io/harald2013/hello-world-worker:sha-<commit>` | `report-worker` | Kein eingehender Port |
 
 `<commit>` ist der volle Commit des erfolgreich geprüften Image-Builds.
-Für API und Worker dieselbe Revision verwenden. Die unveränderlichen Image-Digests
+Für API und Worker dieselbe Revision verwenden. Der Image-Workflow veröffentlicht
+auch Feature-Branch-Revisionen, damit Staging keinen Merge voraussetzt. Die unveränderlichen Image-Digests
 nach dem Build festhalten und für die Übernahme nach Produktion verwenden.
 Alle Rollen erhalten ein gemeinsames, nur für Staging vorgesehenes Netz und
 die oben genannten Aliase. Datenbank, Temporal und Worker nicht öffentlich
@@ -33,7 +45,11 @@ für Temporals Ausführungshistorie; das ist ausschließlich ein Demo-/Staging-A
 
 ## Konfiguration und Reihenfolge
 
-1. PostgreSQL: `POSTGRES_USER=reports`, `POSTGRES_DB=reports`, eigenes zufälliges
+1. PostgreSQL vor einem Austausch vollständig stoppen. In Coolify muss
+   `is_consistent_container_name_enabled=true` aktiv sein. Niemals zwei
+   PostgreSQL-Container mit demselben Datenverzeichnis starten. Das wurde durch
+   einen echten Austausch mit anschließendem Datenzugriff überprüft.
+   PostgreSQL-Konfiguration: `POSTGRES_USER=reports`, `POSTGRES_DB=reports`, eigenes zufälliges
    `POSTGRES_PASSWORD`. Healthcheck `pg_isready -U reports -d reports`.
 2. Temporal nach gesundem PostgreSQL starten: `DB=postgres12`, `DB_PORT=5432`,
    `POSTGRES_USER=reports`, `POSTGRES_PWD` aus dem Secret,
@@ -47,7 +63,8 @@ für Temporals Ausführungshistorie; das ist ausschließlich ein Demo-/Staging-A
 5. Als einmaligen Job das geprüfte API-Image mit `python -m reports.store`
    im selben Netz und mit denselben Variablen starten. Exitcode 0 abwarten.
    Der Job initialisiert das Schema und ist keine dauerhaft laufende Anwendung.
-6. Worker und API starten. API-Healthcheck `GET /ready` auf Port 8000,
+6. Worker und API starten. API-Healthcheck als Kommando im Image (Python-Standardbibliothek):
+   `python -m reports.healthcheck`,
    Timeout mindestens 10 Sekunden. Für den Worker keinen HTTP-Healthcheck
    konfigurieren; Prozessüberwachung und erfolgreich verarbeitete Aufträge prüfen.
 7. Authentifizierten Smoke-Test gegen die Staging-API ausführen:
@@ -65,3 +82,25 @@ starten. Derselbe Auftrag muss anschließend fertig werden. Den lokalen
 Die tatsächlich eingerichteten URLs, UUIDs, Aliase und Volumes gehören nach
 `COOLIFY.md`. Aktuelle Versionen und Deployment-Ergebnisse live prüfen; sie
 gehören nicht in diese stabile Ressourcenübersicht.
+
+## Konfiguration der installierten Coolify-Version
+
+Das MCP-Tool unterstützt derzeit weder `ports_mappings` noch Kommando-Healthchecks.
+Die native API unterstützt Kommando-Healthchecks mit `health_check_type=cmd`,
+lehnt aber in dieser Version Loopback-Portbindungen ab. Die Portbindungen
+der beiden neuen Anwendungen wurden deshalb gezielt über Coolifys Anwendungsmodell
+konfiguriert und anschließend über die API und Docker zurückgelesen. Der API-
+Healthcheck nutzt `python -m reports.healthcheck`, weil Coolify im Kommando nur
+einfache Zeichen zulässt. Der Image-Startbefehl bleibt unverändert. Bei späteren Änderungen zuerst die aktuellen Fähigkeiten prüfen;
+keine Ports vorübergehend auf allen Host-Interfaces veröffentlichen.
+
+## Aufbauvorfall und Wiederherstellung
+
+Beim initialen Einrichten wurde PostgreSQL mit dem Rolling-Verfahren aktualisiert.
+Die überlappenden Prozesse beschädigten das neu angelegte Demo-Datenverzeichnis.
+Es waren noch keine Benutzerberichte vorhanden. PostgreSQL und Temporal wurden
+gestoppt, die Ersatzstrategie korrigiert und ein frisches Volume eingerichtet.
+Das alte Volume bleibt unbenutzt zur Untersuchung erhalten; seine Zuordnung
+und das aktive Volume stehen in `COOLIFY.md`. Das ist keine Wiederherstellungs-
+strategie für Nutzdaten. Für bestehende Daten sind Backups und eine ausdrücklich
+geplante Wiederherstellung erforderlich; siehe [ADR 0005](../docs/adr/0005-stateful-staging-updates.md).
