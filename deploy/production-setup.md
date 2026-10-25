@@ -92,3 +92,10 @@ Authentifizierter HTTP-Report über die eigene Domain, Fehler- und Backup-
 Frischealarme sowie Release-Fehlerisolation in einer separaten Testumgebung
 stehen aus. Upload und isolierte Wiederherstellungsprobe sind nachgewiesen. Die 24-Stunden-Ziele sind daher noch
 nicht als erfüllt nachgewiesen. Keine Fehlermigration gegen Produktion ausführen.
+
+## UI-Aktualisierung
+
+Die UI wird nach der Prüfung derselben Images in Coolify auf Railway übernommen.
+Aktuelle UI-Rollout-Digests, Plattform-IDs und Prüfergebnisse stehen in
+[ui-acceptance.md](ui-acceptance.md). Die ursprünglichen Deployment-IDs weiter
+oben dokumentieren den ersten Aufbau.
