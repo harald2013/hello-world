@@ -2,7 +2,7 @@
 
 Ziel: Coolify auf workhorse, Projekt `report-example`, Umgebung `staging`.
 Fünf eigenständige Docker-Image-Anwendungen; kein Compose-Deployment.
-Strukturelle Zuordnung und private URLs: [COOLIFY.md](../COOLIFY.md).
+Strukturelle Zuordnung und private URLs: [.agents/infra/staging/coolify.md](../.agents/infra/staging/coolify.md).
 
 ## Geprüfte Revision
 

@@ -1,6 +1,7 @@
 # Coolify
 
-Reference for the Coolify instance that hosts the runtime of this repository.
+Reference for the Coolify instance that hosts the `staging` environment of
+this repository.
 A UUID is the identifier Coolify uses in its API and MCP tools.
 
 ## Instance workhorse
