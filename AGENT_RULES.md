@@ -30,6 +30,13 @@
 - Agents MUST verify replacement behavior and subsequent database access on the target host [ADR 0005].
 - Agents MUST preserve and document damaged volumes; fresh volumes MUST be limited to disposable initial setup data or an explicitly approved recovery [ADR 0005].
 
+## Managed cloud placement — [ADR 0006](docs/adr/0006-managed-cloud-placement.md)
+
+- Production API and application worker MUST run on Render as a Web Service and Background Worker respectively [ADR 0006].
+- Production MUST use Frankfurt as the target region for Render and AWS Frankfurt for Temporal Cloud and Neon; agents MUST verify availability before provisioning [ADR 0006].
+- Production releases MUST explicitly trigger deployment through CI/API or the dashboard; a registry push MUST NOT be treated as a deployment [ADR 0006].
+- Agents MUST resolve the budget, plans, domain choice, recovery point objective, and recovery time objective before provisioning paid production resources [ADR 0006].
+
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 
 - Agents MUST document architectural decisions in German ADRs under the applicable scope's `docs/adr/` directory [ADR 0002].

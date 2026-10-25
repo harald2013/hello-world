@@ -5,9 +5,48 @@ Produktionsserver. API und Worker laufen im gewählten Beispiel auf Render (Rail
 Prozesssteuerung in Temporal Cloud, Anwendungsdaten in Neon. workhorse ist für
 Laufzeit und Wiederherstellung der Produktion keine Abhängigkeit.
 
-Diese Anleitung legt keine kostenpflichtigen Ressourcen an. Regionen, Tarife,
-Verfügbarkeitszusagen und Wiederherstellungsziele sind vor dem echten Setup zu
-wählen. Die Bezeichnungen der Dienste garantieren diese Eigenschaften nicht.
+Diese Anleitung legt keine kostenpflichtigen Ressourcen an. Die Verteilung ist
+in [ADR 0006](../docs/adr/0006-managed-cloud-placement.md) beschlossen.
+Tarife, Verfügbarkeitszusagen und Wiederherstellungsziele bleiben vor dem echten
+Setup festzulegen. Die Bezeichnungen der Dienste garantieren diese Eigenschaften
+nicht.
+
+## Abgestimmter Deploymentplan
+
+| Baustein | Lokal | Staging: Coolify auf workhorse | Produktion |
+| --- | --- | --- | --- |
+| FastAPI API | Compose | Einzelnes API-Image | Render Web Service |
+| Python-Worker | Compose | Einzelnes Worker-Image | Render Background Worker |
+| Temporal-Server | Compose | Einzelnes Temporal-Image | Temporal Cloud |
+| Anwendungsdatenbank | Compose | PostgreSQL-Image mit Volume | Neon |
+| Temporal-Oberfläche | Compose | Einzelnes UI-Image | Temporal Cloud Console |
+| Migration | Einmaliger Compose-Job | Temporärer Container | Render Pre-Deploy |
+
+Zielregion ist **Frankfurt**: Render Frankfurt, Temporal Cloud AWS
+`eu-central-1` und Neon AWS Frankfurt. Verfügbarkeit beim Anlegen prüfen:
+[Render](https://render.com/docs/regions),
+[Temporal Cloud](https://docs.temporal.io/evaluate/cloud/regions),
+[Neon](https://neon.com/docs/introduction/regions).
+Anbieterübergreifende Verbindungen verwenden TLS; ein gemeinsames privates
+Netzwerk wird nicht vorausgesetzt.
+
+Vor der kostenpflichtigen Einrichtung sind diese Punkte offen:
+
+- Monatliches Budget und konkrete Tarife für alle drei Anbieter.
+- Domain beziehungsweise bewusste Verwendung der Render-Domain.
+- Maximal tolerierbarer Datenverlust (RPO) und Wiederherstellungszeit (RTO),
+  daraus abgeleitete Backup-Aufbewahrung und Wiederherstellungstests.
+
+Einrichtungsreihenfolge: Neon, Temporal Cloud, Render API samt erfolgreicher
+Pre-Deploy-Migration, anschließend Render Worker. Danach folgen der vollständige
+Report-Test, die Prüfung eines fehlgeschlagenen Migrations-Deployments und ein
+Wiederherstellungstest. Produktionsressourcen sind noch nicht angelegt.
+
+Bei vorgebauten Images werden Releases ausdrücklich über CI/API oder das
+Dashboard ausgelöst. Ein neuer GHCR-Push löst allein kein Render-Deployment aus.
+Die Automatisierung muss erst den API-Erfolg abwarten und danach den Worker
+aktualisieren. Sie übernimmt die in Staging geprüften Digests ohne Neubau.
+Siehe [Render Deployments](https://render.com/docs/deploys).
 
 ## Gemeinsame Vorbereitung
 
