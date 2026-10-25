@@ -6,7 +6,7 @@
 
 ## Kontext
 
-Die Regeln des Development Instructor MCP sollen in diesem Projekt gelten.
+Die Regeln des MCP-Servers `development-mcp` sollen in diesem Projekt gelten.
 Bisher enthält das Repository eine Anleitung für Agenten, aber keine getrennte
 Dokumentation der Architekturentscheidungen und ihrer verbindlichen Leitplanken.
 Menschen benötigen Gründe und Abwägungen, Agenten kurze aktuelle Regeln.
@@ -30,7 +30,7 @@ einem relativen Rückverweis. Die Agentenanleitung verlinkt die geltenden Regeln
 Repository-weite Regeln liegen im Wurzelverzeichnis, zusätzliche Modulregeln
 im engsten betroffenen Bereich ohne geerbte Regeln zu duplizieren.
 
-Neue Dokumente beruhen auf den Vorlagen des Development Instructor MCP.
+Neue Dokumente beruhen auf den Vorlagen des MCP-Servers `development-mcp`.
 Entscheidung, aktuelle Regeln und betroffene Anleitung werden gemeinsam
 geändert. Nach Änderungen wird das vollständige betroffene Dokumentenpaket
 mit dessen Architekturvalidator geprüft und zusätzlich inhaltlich auf Sprache,

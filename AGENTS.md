@@ -9,7 +9,7 @@ Read inherited and active-scope rules when working in a module. Load the linked
 German ADRs only when you need the rationale or are reviewing a decision.
 
 Before planning or changing infrastructure or architecture, call the
-Development Instructor MCP's `server_guide` and then `get_agent_rules`.
+`development-mcp` MCP's `server_guide` and then `get_agent_rules`.
 Apply the returned rules for the domains used by this project.
 
 ## Overview
@@ -52,7 +52,7 @@ Before using Linear, GitHub, Coolify or another standard tool through API,
 CLI or MCP, read its usage notes in `.agents/tools/<tool>.md` and the
 identifiers in [.agents/infra/README.md](.agents/infra/README.md) and
 `.agents/infra/<env>/<tool>.md`. Keep both current in the same task, as the
-Development Instructor rule `tool-context` requires
+`development-mcp` rule `tool-context` requires
 (`get_agent_rules(["tool-context"])`).
 
 ## Verification
@@ -89,5 +89,5 @@ python3 -B scripts/git_fetch.py  <repository> [remote] [ref]
 python3 -B scripts/git_push.py   <repository> [remote] [base]
 ```
 
-`scripts/git_*.py` are unmodified development-instructor templates. Do not
+`scripts/git_*.py` are unmodified `development-mcp` templates. Do not
 edit them in this repository.
