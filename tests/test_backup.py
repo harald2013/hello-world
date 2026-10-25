@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from ops.backup import PREFIX, backup
+from ops.backup import PREFIX, backup, postgres_environment
 
 
 def client_for_dump(monkeypatch):
@@ -39,7 +39,11 @@ def test_retention_never_deletes_outside_scope(monkeypatch):
             ]
         },
     ]
-    backup(client, "postgresql://example/reports?sslmode=verify-full", "bucket")
+    backup(
+        client,
+        "postgresql://reports:fake@example/reports?sslmode=verify-full",
+        "bucket",
+    )
     client.delete_object.assert_called_once_with(
         Bucket="bucket", Key=PREFIX + "old.dump"
     )
@@ -53,7 +57,11 @@ def test_failed_dump_does_not_upload_or_prune(monkeypatch):
     monkeypatch.setattr(subprocess, "run", fail)
     client = Mock()
     with pytest.raises(subprocess.CalledProcessError):
-        backup(client, "postgresql://example/reports?sslmode=verify-full", "bucket")
+        backup(
+            client,
+            "postgresql://reports:fake@example/reports?sslmode=verify-full",
+            "bucket",
+        )
     client.upload_file.assert_not_called()
     client.get_paginator.assert_not_called()
 
@@ -63,10 +71,41 @@ def test_unverified_upload_does_not_prune(monkeypatch):
     client.upload_file.side_effect = None
     client.head_object.return_value = {"ContentLength": 1, "Metadata": {}}
     with pytest.raises(RuntimeError):
-        backup(client, "postgresql://example/reports?sslmode=verify-full", "bucket")
+        backup(
+            client,
+            "postgresql://reports:fake@example/reports?sslmode=verify-full",
+            "bucket",
+        )
     client.get_paginator.assert_not_called()
 
 
 def test_rejects_bucket_wide_prefix():
     with pytest.raises(ValueError):
-        backup(Mock(), "postgresql://example/reports?sslmode=verify-full", "bucket", "")
+        backup(
+            Mock(),
+            "postgresql://reports:fake@example/reports?sslmode=verify-full",
+            "bucket",
+            "",
+        )
+
+
+def test_postgres_url_is_split_into_libpq_environment():
+    env = postgres_environment(
+        "postgresql://reports:p%40ss%26word@db.example:5433/reports"
+        "?sslmode=verify-full&channel_binding=require&sslrootcert=/etc/ssl/test.pem"
+    )
+    assert env["PGDATABASE"] == "reports"
+    assert env["PGHOST"] == "db.example"
+    assert env["PGPORT"] == "5433"
+    assert env["PGPASSWORD"] == "p@ss&word"
+    assert env["PGSSLMODE"] == "verify-full"
+    assert env["PGCHANNELBINDING"] == "require"
+    assert env["PGSSLROOTCERT"] == "/etc/ssl/test.pem"
+
+
+@pytest.mark.parametrize(
+    "query", ["sslmode=require", "sslmode=verify-full&sslmode=disable"]
+)
+def test_postgres_rejects_weak_or_ambiguous_tls(query):
+    with pytest.raises(ValueError):
+        postgres_environment("postgresql://reports:fake@db.example/reports?" + query)

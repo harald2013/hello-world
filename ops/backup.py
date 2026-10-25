@@ -7,21 +7,54 @@ import sys
 import tempfile
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from urllib.parse import parse_qs, unquote, urlsplit
 from uuid import uuid4
 
 PREFIX = "report-example/production/"
+
+
+def postgres_environment(database_url):
+    url = urlsplit(database_url)
+    query = parse_qs(url.query)
+    if (
+        url.scheme not in {"postgres", "postgresql"}
+        or not url.hostname
+        or not url.username
+        or url.password is None
+        or not url.path.strip("/")
+        or query.get("sslmode") != ["verify-full"]
+    ):
+        raise ValueError("Verified PostgreSQL connection required")
+    # libpq does not expand connection URIs taken from PGDATABASE.
+    env = {
+        **os.environ,
+        "PGHOST": url.hostname,
+        "PGPORT": str(url.port or 5432),
+        "PGUSER": unquote(url.username),
+        "PGPASSWORD": unquote(url.password),
+        "PGDATABASE": unquote(url.path.lstrip("/")),
+        "PGSSLMODE": "verify-full",
+        "PGCONNECT_TIMEOUT": "15",
+    }
+    for option, variable in (
+        ("sslrootcert", "PGSSLROOTCERT"),
+        ("channel_binding", "PGCHANNELBINDING"),
+    ):
+        if option in query:
+            if len(query[option]) != 1:
+                raise ValueError("Ambiguous database connection option")
+            env[variable] = query[option][0]
+    return env
 
 
 def backup(client, database_url, bucket, prefix=PREFIX, retention_days=7):
     # This bucket is shared. Never accept a wider deletion scope.
     if prefix != PREFIX or retention_days != 7:
         raise ValueError("Unexpected backup scope")
-    if "sslmode=verify-full" not in database_url:
-        raise ValueError("Database certificate verification required")
+    env = postgres_environment(database_url)
     now = datetime.now(UTC)
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "database.dump"
-        env = {**os.environ, "PGDATABASE": database_url, "PGCONNECT_TIMEOUT": "15"}
         subprocess.run(
             [
                 "pg_dump",

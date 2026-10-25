@@ -38,8 +38,14 @@ Neon-Zeile wurde separat mit Status completed und demselben Ergebnis bestätigt.
 
 Backupimage nach erfolgreichen CI- und Image-Prüfungen veröffentlicht:
 `ghcr.io/harald2013/hello-world-backup@sha256:4385d0245aa9e8dc794dc0529f7f6a21a26560d18582a10cd6be87c5c2aa4dcb`.
-Die Quelle ist in Railway vorgemerkt. AWS_ACCESS_KEY_ID und AWS_SECRET_ACCESS_KEY
-müssen direkt beim Backup-Dienst gesetzt werden; erst dann den Job aktivieren.
+R2-Secrets sind inzwischen beim Backup-Dienst hinterlegt. Der erste tatsächliche
+Einmallauf (`bce44073-570c-4b8b-9f42-d294c28b710b`) scheiterte beim pg_dump:
+libpq expandiert eine vollständige Verbindungs-URL aus PGDATABASE nicht und suchte
+deshalb einen lokalen Unix-Socket. Der Backup-Code setzt jetzt einzelne
+PGHOST-/PGPORT-/PGUSER-/PGPASSWORD-/PGDATABASE-Variablen und prüft TLS weiterhin
+vollständig. Ein lokaler Gegenversuch reproduzierte den Socket-Fehler, und drei
+neue Regressionstests prüfen URL-Dekodierung und die strikte TLS-Konfiguration.
+Die korrigierte Image-Version und der erste erfolgreiche Upload sind noch zu prüfen.
 
 Die Neon-API meldet am neu angelegten Endpoint suspend_timeout_seconds=0.
 Explizites Setzen des Intervalls beim Projektanlegen wurde vom Free-Konto mit
