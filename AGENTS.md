@@ -40,8 +40,9 @@ uv run python scripts/smoke.py
 
 See [README.md](README.md) for API usage and [deploy/](deploy/operations.md)
 for configuration. Staging uses individual images on workhorse. Production uses
-managed application hosting, Temporal Cloud and Neon; actual infrastructure
-creation is separate from the local example.
+managed application hosting, Temporal Cloud and Neon. Read [COOLIFY.md](COOLIFY.md)
+for existing staging resources before using Coolify tools; production resources
+have not been provisioned.
 
 ## Verification
 

@@ -15,11 +15,11 @@ workhorse
 └── server localhost
     └── project report-example
         └── environment staging
-            ├── worker
-            ├── api
-            ├── temporal-ui
-            ├── temporal
             ├── postgres
+            ├── temporal
+            ├── temporal-ui
+            ├── api
+            └── worker
 ```
 
 The project uses the existing dedicated staging Docker network `infrastructure-staging` (`oluvljjdh550m6de7ifsdfe8`). Its historical name is

@@ -13,10 +13,13 @@ Weboberfläche ist für dieses erste Beispiel nicht erforderlich; die API ist
 | Prozesssteuerung | Temporal-Container | Temporal-Container auf workhorse | Temporal Cloud |
 | Anwendungsdaten | PostgreSQL-Container | PostgreSQL-Container auf workhorse | Neon |
 
-Der Code und die Konfigurationen liegen hier. Ein Staging- oder SaaS-Deployment
-wird durch das Auschecken oder Starten dieses Beispiels nicht angelegt.
-Der lokale Durchlauf ist die erste Stufe; echte Anbieterressourcen werden
-anschließend eingerichtet. Die Vorlage wird vor der Ableitung allgemeiner
+Staging ist auf workhorse eingerichtet: [API-Dokumentation](https://workhorse.tail8fba42.ts.net:18443/docs)
+und [Temporal UI](https://workhorse.tail8fba42.ts.net:18444/) sind im Tailnet
+zugänglich. [COOLIFY.md](COOLIFY.md) enthält die Ressourcenübersicht;
+[deploy/staging.md](deploy/staging.md) beschreibt Konfiguration und Betrieb.
+Der API-Schlüssel wird gezielt aus dem Laufzeit-Secret `API_TOKEN` der
+API-Anwendung in Coolify abgerufen. Produktion auf Render ist vorbereitet,
+aber noch nicht angelegt. Die Vorlage wird vor der Ableitung allgemeiner
 Development-MCP-Regeln praktisch erprobt.
 
 ## Lokal starten

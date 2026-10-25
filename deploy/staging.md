@@ -20,6 +20,9 @@ Temporal und Worker haben weder Host-Port noch öffentliche Domain. Der
 API-Schlüssel liegt als Laufzeit-Secret `API_TOKEN` an der API-Anwendung in
 Coolify; zum Verwenden gezielt dort abrufen und nicht in Dokumentation kopieren.
 
+Der [Abnahmenachweis](staging-acceptance.md) enthält Image-Digests und Ergebnisse
+der echten Deployment-, Persistenz- und Wiederanlauftests.
+
 ## Einzelne Ressourcen
 
 In Coolify auf workhorse das Projekt `report-example` mit Umgebung
@@ -31,7 +34,7 @@ Docker-Image-Anwendung. Compose wird hier nicht verwendet.
 | PostgreSQL | `postgres:16.6` | `report-postgres` | 5432 intern; Volume `/var/lib/postgresql/data` |
 | Temporal | `temporalio/auto-setup:1.29.7` | `report-temporal` | 7233 intern |
 | Temporal UI | `temporalio/ui:2.51.0` | `report-temporal-ui` | 8080; nur privater Zugriff |
-| API | `ghcr.io/harald2013/hello-world-api:sha-<commit>` | `report-api` | 8000; HTTPS am Proxy |
+| API | `ghcr.io/harald2013/hello-world-api:sha-<commit>` | `report-api` | 8000; HTTPS über Tailscale Serve |
 | Worker | `ghcr.io/harald2013/hello-world-worker:sha-<commit>` | `report-worker` | Kein eingehender Port |
 
 `<commit>` ist der volle Commit des erfolgreich geprüften Image-Builds.
@@ -40,7 +43,7 @@ auch Feature-Branch-Revisionen, damit Staging keinen Merge voraussetzt. Die unve
 nach dem Build festhalten und für die Übernahme nach Produktion verwenden.
 Alle Rollen erhalten ein gemeinsames, nur für Staging vorgesehenes Netz und
 die oben genannten Aliase. Datenbank, Temporal und Worker nicht öffentlich
-veröffentlichen. Der PostgreSQL-Container hält hier auch die separaten Datenbanken
+veröffentlichen. API und UI bleiben ebenfalls ausschließlich im Tailnet. Der PostgreSQL-Container hält hier auch die separaten Datenbanken
 für Temporals Ausführungshistorie; das ist ausschließlich ein Demo-/Staging-Aufbau.
 
 ## Konfiguration und Reihenfolge
