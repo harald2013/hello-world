@@ -1,7 +1,7 @@
 name: Report example · Container images
 on:
   push:
-    branches: [main]
+    branches: [main, "feature/**"]
   workflow_dispatch:
 permissions:
   contents: read
