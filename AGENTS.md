@@ -22,6 +22,7 @@ Portable report example: FastAPI, Temporal workflows and PostgreSQL.
 - `Dockerfile` — `api` and `worker` targets, Python 3.13, non-root runtime.
 - `compose.yml` — local synthetic-data stack; never deploy it to Coolify.
 - `deploy/` — staging and managed-production setup and operating instructions.
+- `.agents/` — tool usage (`tools/`) and infrastructure inventory per environment (`infra/`).
 - `.github/workflows/` — CI and immutable image publication.
 - `scripts/verify` — the verification entry point.
 - `scripts/smoke.py` — full-stack check; optional local worker restart.
@@ -40,9 +41,19 @@ uv run python scripts/smoke.py
 
 See [README.md](README.md) for API usage and [deploy/](deploy/operations.md)
 for configuration. Staging uses individual images on workhorse. Production uses
-managed application hosting, Temporal Cloud and Neon. Read [COOLIFY.md](COOLIFY.md)
-for existing staging resources before using Coolify tools; production resources
-have not been provisioned.
+managed application hosting, Temporal Cloud and Neon. Read
+[.agents/infra/staging/coolify.md](.agents/infra/staging/coolify.md) for existing
+staging resources before using Coolify tools; production resources have not
+been provisioned.
+
+## Tool context
+
+Before using Linear, GitHub, Coolify or another standard tool through API,
+CLI or MCP, read its usage notes in `.agents/tools/<tool>.md` and the
+identifiers in [.agents/infra/README.md](.agents/infra/README.md) and
+`.agents/infra/<env>/<tool>.md`. Keep both current in the same task, as the
+Development Instructor rule `tool-context` requires
+(`get_agent_rules(["tool-context"])`).
 
 ## Verification
 

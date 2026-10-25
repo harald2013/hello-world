@@ -15,7 +15,7 @@ Weboberfläche ist für dieses erste Beispiel nicht erforderlich; die API ist
 
 Staging ist auf workhorse eingerichtet: [API-Dokumentation](https://workhorse.tail8fba42.ts.net:18443/docs)
 und [Temporal UI](https://workhorse.tail8fba42.ts.net:18444/) sind im Tailnet
-zugänglich. [COOLIFY.md](COOLIFY.md) enthält die Ressourcenübersicht;
+zugänglich. [.agents/infra/staging/coolify.md](.agents/infra/staging/coolify.md) enthält die Ressourcenübersicht;
 [deploy/staging.md](deploy/staging.md) beschreibt Konfiguration und Betrieb.
 Der API-Schlüssel wird gezielt aus dem Laufzeit-Secret `API_TOKEN` der
 API-Anwendung in Coolify abgerufen. Produktion auf Render ist vorbereitet,

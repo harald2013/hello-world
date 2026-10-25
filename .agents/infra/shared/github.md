@@ -1,0 +1,35 @@
+# GitHub — shared
+
+Artifacts of GitHub in the `shared` environment of this repository.
+Maintained by agents under the `tool-context` rule from the development MCP
+server. Record stable identifiers and structure only; read pull requests,
+checks, image tags and commits live. Never store secrets.
+
+## Instance
+
+- Instance or account: github.com, account `harald2013`
+- URL: https://github.com/harald2013/hello-world
+- MCP server: none; use the `gh` CLI
+
+## Structure
+
+```
+harald2013
+└── repository hello-world
+    ├── branch main
+    ├── workflow Report example · Tests and checks
+    ├── workflow Report example · Container images
+    ├── package hello-world-api
+    └── package hello-world-worker
+```
+
+## Artifacts
+
+| Name | ID | Kind | Description |
+| --- | --- | --- | --- |
+| harald2013/hello-world | 1406819325 | repository | Remote `git@github.com:harald2013/hello-world.git`; default branch `main`, changes only through PRs |
+| main | main | branch | PR base; source of staging images |
+| Report example · Tests and checks | .github/workflows/ci.yml | workflow | Runs on PRs and pushes to `main` |
+| Report example · Container images | .github/workflows/image.yml | workflow | Pushes to `main` and `feature/**` publish images tagged `sha-<commit>` |
+| hello-world-api | ghcr.io/harald2013/hello-world-api | container package | API image; Coolify staging application `api` |
+| hello-world-worker | ghcr.io/harald2013/hello-world-worker | container package | Worker image; Coolify staging application `worker` |

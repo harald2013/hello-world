@@ -2,7 +2,7 @@
 
 Das Projekt `report-example` mit der Umgebung `staging` ist auf workhorse
 angelegt. Die tatsächlichen Ressourcen, UUIDs, Netzwerk-Aliase und privaten
-HTTPS-Adressen stehen in [COOLIFY.md](../COOLIFY.md). IDP dient als Beispiel
+HTTPS-Adressen stehen in [.agents/infra/staging/coolify.md](../.agents/infra/staging/coolify.md). IDP dient als Beispiel
 für Image-Anwendungen; seine Dienste und Zugangsdaten werden nicht verwendet.
 Staging enthält ausschließlich synthetische Daten.
 
@@ -83,7 +83,7 @@ starten. Derselbe Auftrag muss anschließend fertig werden. Den lokalen
 `--restart-worker`-Schalter nicht gegen Staging verwenden.
 
 Die tatsächlich eingerichteten URLs, UUIDs, Aliase und Volumes gehören nach
-`COOLIFY.md`. Aktuelle Versionen und Deployment-Ergebnisse live prüfen; sie
+`.agents/infra/staging/coolify.md`. Aktuelle Versionen und Deployment-Ergebnisse live prüfen; sie
 gehören nicht in diese stabile Ressourcenübersicht.
 
 ## Konfiguration der installierten Coolify-Version
@@ -104,6 +104,6 @@ Die überlappenden Prozesse beschädigten das neu angelegte Demo-Datenverzeichni
 Es waren noch keine Benutzerberichte vorhanden. PostgreSQL und Temporal wurden
 gestoppt, die Ersatzstrategie korrigiert und ein frisches Volume eingerichtet.
 Das alte Volume bleibt unbenutzt zur Untersuchung erhalten; seine Zuordnung
-und das aktive Volume stehen in `COOLIFY.md`. Das ist keine Wiederherstellungs-
+und das aktive Volume stehen in `.agents/infra/staging/coolify.md`. Das ist keine Wiederherstellungs-
 strategie für Nutzdaten. Für bestehende Daten sind Backups und eine ausdrücklich
 geplante Wiederherstellung erforderlich; siehe [ADR 0005](../docs/adr/0005-stateful-staging-updates.md).
