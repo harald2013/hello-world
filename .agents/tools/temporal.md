@@ -13,6 +13,13 @@
 Read `.agents/infra/production/temporal.md`. Always restrict workflow queries to
 this application's report IDs and task queue.
 
+### Synthetic deployment check
+
+Use start_workflow with ReportWorkflow, reports-v1 and a fresh report UUID.
+The single input object has report_id, values and delay_seconds. Check only that
+workflow with get_workflow_result; verify the matching reports row through Neon.
+This checks the worker/database path and does not replace the API HTTP smoke test.
+
 ## Pitfalls
 
 - A connected MCP workflow tool does not provide namespace or billing administration.

@@ -19,6 +19,7 @@ Call get_connection_string and pass the result directly to Railway variables wit
 ## Pitfalls
 
 - Free accounts reject explicitly setting suspend_timeout_seconds during project creation (HTTP 412). Omit the setting and read the actual endpoint configuration.
+- get_connection_string can return a pooler hostname while pooler_enabled is false. Use the direct host from list_postgres_endpoints for this deployment and for migrations/backups.
 - Keep initial compute fixed at 0.25 CU and watch the Free compute allowance.
 
 ## References
