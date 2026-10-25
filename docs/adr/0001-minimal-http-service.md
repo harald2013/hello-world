@@ -1,6 +1,6 @@
 # ADR 0001: Minimaler HTTP-Dienst mit Python-Standardbibliothek
 
-- Status: Akzeptiert
+- Status: Abgelöst durch ADR 0003
 - Datum: 2026-10-25
 - Geltungsbereich: HTTP-Dienst und Container im gesamten Repository
 

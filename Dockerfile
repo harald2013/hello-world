@@ -1,4 +1,18 @@
-FROM python:3.13-slim
-COPY app.py .
+FROM python:3.13-slim AS base
+COPY --from=ghcr.io/astral-sh/uv:0.12.5 /uv /usr/local/bin/uv
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+RUN uv sync --locked --no-dev
+ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1
+COPY reports ./reports
+COPY app.py ./
+RUN useradd --uid 10001 --create-home app
+USER app
+
+FROM base AS worker
+CMD ["python", "-m", "reports.worker"]
+
+FROM base AS api
 EXPOSE 8000
-CMD ["python", "-u", "app.py"]
+CMD ["sh", "-c", "exec uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"]

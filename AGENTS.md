@@ -14,14 +14,17 @@ Apply the returned rules for the domains used by this project.
 
 ## Overview
 
-Minimal HTTP server that returns a plain-text greeting. It uses only the
-Python standard library.
+Portable report example: FastAPI, Temporal workflows and PostgreSQL.
 
-- `app.py` — the whole server. `GET /health` returns `ok`; every other
-  `GET` path returns `BODY`. Listens on `0.0.0.0:8000`.
-- `tests/test_app.py` — pytest tests that start the server on a free port.
-- `Dockerfile` — runs `app.py` on `python:3.13-slim`, exposes port 8000.
+- `app.py` — ASGI entry point; API routes live in `reports/api.py`.
+- `reports/` — runtime configuration, models, database, workflow and worker.
+- `tests/` — API/configuration tests and a real Temporal test-server integration.
+- `Dockerfile` — `api` and `worker` targets, Python 3.13, non-root runtime.
+- `compose.yml` — local synthetic-data stack; never deploy it to Coolify.
+- `deploy/` — staging and managed-production setup and operating instructions.
+- `.github/workflows/` — CI and immutable image publication.
 - `scripts/verify` — the verification entry point.
+- `scripts/smoke.py` — full-stack check; optional local worker restart.
 - `scripts/git_*.py` — workflow git scripts (see below).
 
 ## Local Setup
@@ -29,18 +32,16 @@ Python standard library.
 Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-uv sync
-uv run python app.py
-curl -s http://127.0.0.1:8000/        # greeting
-curl -s http://127.0.0.1:8000/health  # ok
+uv sync --locked
+cp .env.example .env
+docker compose up --build -d --wait --wait-timeout 240
+uv run python scripts/smoke.py
 ```
 
-Container:
-
-```bash
-docker build -t hello-world .
-docker run --rm -p 8000:8000 hello-world
-```
+See [README.md](README.md) for API usage and [deploy/](deploy/operations.md)
+for configuration. Staging uses individual images on workhorse. Production uses
+managed application hosting, Temporal Cloud and Neon; actual infrastructure
+creation is separate from the local example.
 
 ## Verification
 
@@ -53,8 +54,9 @@ Run before every commit:
 It runs `ruff check`, `ruff format --check` and `pytest`. `scripts/` is
 excluded from ruff.
 
-When changing `BODY`, `HEALTH_BODY` or `CONTENT_TYPE`, the tests import the
-constants from `app.py`; keep tests and app in sync.
+The Temporal integration downloads the official SDK test server on first use;
+`TEMPORAL_TEST_SERVER` can select an existing binary. After container or database
+changes, also run the Compose smoke test. Workflow changes require history replay.
 
 ## Workflow
 

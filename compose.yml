@@ -1,0 +1,112 @@
+name: report-example
+
+x-app-environment: &app-environment
+  APP_ENV: local
+  DATABASE_URL: postgresql://reports:${POSTGRES_PASSWORD:-local-demo-only}@postgres:5432/reports
+  TEMPORAL_ADDRESS: temporal:7233
+  TEMPORAL_NAMESPACE: default
+  TEMPORAL_TASK_QUEUE: reports-v1
+  API_TOKEN: ${API_TOKEN:-}
+
+services:
+  postgres:
+    image: postgres:16.6
+    environment:
+      POSTGRES_USER: reports
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-demo-only}
+      POSTGRES_DB: reports
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U reports -d reports"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  temporal:
+    image: temporalio/auto-setup:1.29.7
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB: postgres12
+      DB_PORT: "5432"
+      POSTGRES_USER: reports
+      POSTGRES_PWD: ${POSTGRES_PASSWORD:-local-demo-only}
+      POSTGRES_SEEDS: postgres
+      BIND_ON_IP: 0.0.0.0
+      DEFAULT_NAMESPACE: default
+    ports:
+      - "127.0.0.1:${TEMPORAL_PORT:-17243}:7233"
+
+  temporal-ready:
+    image: temporalio/admin-tools:1.29.7-tctl-1.18.4-cli-1.7.2
+    depends_on:
+      temporal:
+        condition: service_started
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+    entrypoint: [/bin/sh, -ec]
+    command:
+      - |
+        for attempt in $$(seq 1 90); do
+          temporal operator namespace describe --namespace default && exit 0
+          sleep 2
+        done
+        exit 1
+
+  temporal-ui:
+    image: temporalio/ui:2.51.0
+    depends_on:
+      temporal-ready:
+        condition: service_completed_successfully
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+    ports:
+      - "127.0.0.1:${TEMPORAL_UI_PORT:-18243}:8080"
+
+  migrate:
+    image: ${API_IMAGE:-report-example-api:local}
+    environment: *app-environment
+    command: [python, -m, reports.store]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    image: ${API_IMAGE:-report-example-api:local}
+    build:
+      context: .
+      target: api
+    environment: *app-environment
+    ports:
+      - "127.0.0.1:${API_PORT:-18000}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      temporal-ready:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready', timeout=10)"]
+      interval: 10s
+      timeout: 12s
+      retries: 6
+    stop_grace_period: 30s
+
+  worker:
+    image: ${WORKER_IMAGE:-report-example-worker:local}
+    build:
+      context: .
+      target: worker
+    environment: *app-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      temporal-ready:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    stop_grace_period: 30s
+
+volumes:
+  postgres-data:

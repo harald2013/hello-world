@@ -1,12 +1,17 @@
 # Agent Rules
 
-## Minimal HTTP service — [ADR 0001](docs/adr/0001-minimal-http-service.md)
+## Report example — [ADR 0003](docs/adr/0003-report-example.md)
 
-- The HTTP service MUST use only the Python standard library at runtime [ADR 0001].
-- The service MUST listen on `0.0.0.0:8000` by default [ADR 0001].
-- The service MUST return status 200 and plain UTF-8 text for GET requests [ADR 0001].
-- The service MUST return `ok` for the `/health` URL path and the configured greeting for every other GET path [ADR 0001].
-- The container MUST run the same Python service as local execution [ADR 0001].
+- The example MUST use Python, a FastAPI API, a Temporal worker, and PostgreSQL [ADR 0003].
+- Workflow code MUST remain deterministic; database operations MUST run in retryable, idempotent activities [ADR 0003].
+- API and worker images MUST be built once per revision and promoted unchanged between environments [ADR 0003].
+- Local services MUST use Docker Compose and publish ports only on loopback [ADR 0003].
+- Staging MUST deploy individual images on workhorse through Coolify and MUST NOT use Compose [ADR 0003].
+- Production MUST use managed application hosting, Temporal Cloud, and Neon; it MUST NOT depend on workhorse [ADR 0003].
+- Local and staging environments MUST use synthetic data and separate credentials from production [ADR 0003].
+- Runtime configuration MUST come from environment variables; secrets MUST NOT enter images, source control, or logs [ADR 0003].
+- Staging and production APIs MUST require an API token; production MUST enable Temporal TLS and database certificate verification [ADR 0003].
+- Agents MUST keep deployed resource metadata separate from deployment instructions and MUST NOT invent resource identifiers [ADR 0003].
 
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 

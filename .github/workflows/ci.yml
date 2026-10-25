@@ -1,0 +1,26 @@
+name: Report example · Tests and checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.5"
+          python-version: "3.13"
+      - run: uv sync --locked
+      - run: ./scripts/verify
+      - run: docker compose config --quiet
+      - run: docker compose up --build -d --wait --wait-timeout 240
+      - run: API_BASE_URL=http://127.0.0.1:18000 uv run python scripts/smoke.py
+      - run: docker compose exec -T api python < scripts/check_store.py
+      - if: failure()
+        run: docker compose logs --tail 80
+      - if: always()
+        run: docker compose down --volumes

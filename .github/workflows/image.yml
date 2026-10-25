@@ -1,0 +1,41 @@
+name: Report example · Container images
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.5"
+          python-version: "3.13"
+      - run: uv sync --locked
+      - run: ./scripts/verify
+      - run: docker compose up --build -d --wait --wait-timeout 240
+      - run: uv run python scripts/smoke.py --restart-worker
+      - run: docker compose exec -T api python < scripts/check_store.py
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish the tested images
+        env:
+          REPOSITORY: ${{ github.repository }}
+          REVISION: ${{ github.sha }}
+        run: |
+          for role in api worker; do
+            image="ghcr.io/${REPOSITORY,,}-${role}:sha-${REVISION}"
+            docker tag "report-example-${role}:local" "$image"
+            docker push "$image"
+          done
+      - if: failure()
+        run: docker compose logs --tail 80
+      - if: always()
+        run: docker compose down --volumes
