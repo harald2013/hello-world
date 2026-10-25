@@ -20,7 +20,8 @@ harald2013
     ├── workflow Report example · Tests and checks
     ├── workflow Report example · Container images
     ├── package hello-world-api
-    └── package hello-world-worker
+    ├── package hello-world-worker
+    └── package hello-world-backup
 ```
 
 ## Artifacts
@@ -30,6 +31,7 @@ harald2013
 | harald2013/hello-world | 1406819325 | repository | Remote `git@github.com:harald2013/hello-world.git`; default branch `main`, changes only through PRs |
 | main | main | branch | PR base; source of staging images |
 | Report example · Tests and checks | .github/workflows/ci.yml | workflow | Runs on PRs and pushes to `main` |
-| Report example · Container images | .github/workflows/image.yml | workflow | Pushes to `main` and `feature/**` publish images tagged `sha-<commit>` |
+| Report example · Container images | .github/workflows/image.yml | workflow | Pushes to `main` and `feature/**` publish API, worker and backup images tagged `sha-<commit>` |
 | hello-world-api | ghcr.io/harald2013/hello-world-api | container package | API image; Coolify staging application `api` |
 | hello-world-worker | ghcr.io/harald2013/hello-world-worker | container package | Worker image; Coolify staging application `worker` |
+| hello-world-backup | ghcr.io/harald2013/hello-world-backup | container package | Backup image for the Railway scheduled job |

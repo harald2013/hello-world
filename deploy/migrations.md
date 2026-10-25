@@ -1,8 +1,7 @@
-# Migrationen in der Render-Pre-Deploy-Phase
+# Migrationen in der Railway-Pre-Deploy-Phase
 
-Render ist für dieses Beispiel ausgewählt. Ein Render-Service existiert noch
-nicht; die Konfiguration ist vorbereitet, die Plattform-Abnahme steht aus.
-Railway bleibt eine alternative Betriebsoption, wird hier nicht eingerichtet.
+Railway ist für dieses Beispiel ausgewählt. Die Dienste sind angelegt; die
+Plattform-Abnahme steht noch aus. ADR 0006 ersetzt die frühere Render-Auswahl.
 
 ## Image und Befehl
 
@@ -11,7 +10,7 @@ Railway bleibt eine alternative Betriebsoption, wird hier nicht eingerichtet.
 ```
 
 Das API-Image enthält Python, psycopg und den Migrationscode. Das Dockerfile setzt
-zusätzlich `/app/.venv/bin` im PATH. Keine Installation und kein Build auf Render
+zusätzlich `/app/.venv/bin` im PATH. Keine Installation und kein Build auf Railway
 sind nötig. Die Migration verwendet die Runtime-Variablen aus
 [production.env.example](production.env.example), einschließlich Produktions-TLS
 und API-Token-Validierung, verbindet sich aber nur zur Datenbank.
@@ -26,29 +25,18 @@ Der Lock serialisiert konkurrierende Jobs; das aktuelle Statement-Limit beträgt
 Aktuell initialisiert der Befehl eine Tabelle wiederholbar. Er ersetzt noch kein
 versioniertes Migrationssystem für spätere Schemaänderungen.
 
-## Render konfigurieren
+## Railway konfigurieren
 
-1. Den API-Dienst als bezahlten **Web Service / Existing Image** anlegen. Als
-   Image den zuvor getesteten API-Digest verwenden, Registry-Zugang hinterlegen.
-   Region und Tarif auswählen; kein Repository-Build und kein persistenter Disk.
-2. Runtime-Variablen setzen. Unter **Settings → Build & Deploy → Pre-Deploy
-   Command** exakt den obigen Befehl eintragen. Den Docker-Startbefehl aus dem
-   Image übernehmen; Healthcheck `/ready` setzen.
-3. Pre-Deploy bei jedem Release ausführen lassen, auch beim ersten. Kein
-   separater Migrations-Dauerdienst und keine Migration in CMD/Entrypoint.
-4. Nach erfolgreichem API-Deployment den passenden Worker-Digest ausrollen.
-   Der Worker erhält dieselben Runtime-Werte, aber keinen Pre-Deploy-Befehl.
-   Die beiden Dienste werden von Render nicht automatisch gemeinsam geordnet.
-
-[render.yaml.example](render.yaml.example) bildet diese Einstellungen als
-Blueprint-Vorlage ab. Die Digest-Platzhalter ersetzen; `starter` und `frankfurt`
-sind Vorschläge. Die Vorlage wird nicht automatisch angewendet. Beim ersten
-Setup zunächst nur den API-Eintrag übernehmen und erst nach dessen erfolgreicher
-Pre-Deploy-Phase den Worker ergänzen. Secrets für beide Dienste konsistent setzen.
-
-Vorgebaute Images werden bei Render nicht allein durch einen Registry-Push neu
-ausgerollt. Den getesteten neuen Digest setzen und ein manuelles/API-Deployment
-auslösen. Dadurch läuft die native Pre-Deploy-Phase automatisiert pro Deployment.
+1. API als Dienst aus dem bereits geprüften APIimage-Digest konfigurieren.
+   Keine Plattform-Builds. Runtime-Variablen und Registry-Zugriff setzen.
+2. In Settings → Deploy den Pre-Deploy Command
+   `/app/.venv/bin/python -m reports.store` setzen. Native Pre-Deploy-Phase
+   bei jedem Deployment ausführen lassen. Healthcheck `/ready`, Port 8000.
+3. Erst nach erfolgreichem API-Deployment das passende Workerimage ausrollen.
+   Der Worker erhält keinen eigenen Pre-Deploy-Befehl. Kein paralleles Commit
+   eines Railway-Patches, das API und Worker zugleich aktualisiert.
+4. Secrets im Dashboard hinterlegen; keine Migration im normalen Startbefehl
+   und kein dauerhafter Migrationsdienst.
 
 ## Lokaler Container-Nachweis
 
@@ -62,11 +50,11 @@ Der Test legt ausschließlich im lokalen Compose-Postgres eine temporäre Datenb
 an, löst nach DDL einen SQL-Fehler aus, prüft Exit-Code und Rollback, führt den
 echten Befehl zweimal erfolgreich aus und prüft die weiterhin laufende API.
 Die Testdatenbank wird anschließend gelöscht. CI und Image-Veröffentlichung
-führen diesen Test aus. Das prüft die Migration, nicht Renders Deploymentlogik.
+führen diesen Test aus. Das prüft die Migration, nicht Railways Deploymentlogik.
 
 ## Ausstehende Plattform-Abnahme
 
-In einer eigenen Render-Testumgebung mit synthetischen Daten durchführen:
+In einer eigenen Railway-Testumgebung mit synthetischen Daten durchführen:
 
 1. Eine funktionierende alte Version bereitstellen. Service-ID, bisherigen
    Image-Digest und Deployment-ID als Vergleich festhalten.
@@ -89,6 +77,5 @@ Migrationsjob mit anschließend fehlgeschlagenem App-Start setzt das Schema nich
 automatisch zurück. Destruktive Änderungen erst nach separater Freigabe und dem
 Entfernen aller alten Verbraucher durchführen.
 
-Quellen: [Render-Deployment und Pre-Deploy](https://render.com/docs/deploys),
-[Blueprint-Spezifikation](https://render.com/docs/blueprint-spec),
-[vorgebaute Images](https://render.com/docs/deploying-an-image).
+Quellen: [Railway Pre-Deploy](https://docs.railway.com/deployments/pre-deploy-command),
+[Healthchecks](https://docs.railway.com/deployments/healthchecks).

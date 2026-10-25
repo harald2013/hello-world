@@ -1,6 +1,6 @@
 # ADR 0004: Datenbankschema vor dem Rollout mit Render migrieren
 
-- Status: Akzeptiert
+- Status: Teilweise ersetzt durch ADR 0006 (Anbieterwahl)
 - Datum: 2026-10-25
 - Geltungsbereich: Deployment und Datenbankschema des Beispielprojekts
 

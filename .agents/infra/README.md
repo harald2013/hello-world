@@ -12,18 +12,21 @@ environment, in `.agents/infra/shared/<tool>.md`. Never store secrets.
 | --- | --- | --- |
 | local | Synthetic-data stack from `compose.yml`; never deployed to Coolify | feature branch |
 | staging | Individual images on workhorse with synthetic data ([staging](../../deploy/staging.md)) | image tags `sha-<commit>` from `main` or `feature/**` |
-| production | Render, Temporal Cloud and Neon ([production](../../deploy/production.md)); not provisioned yet | main |
+| production | Railway, Temporal Cloud and Neon ([production](../../deploy/production.md)) | main |
 
 ## Tools per environment
 
 | Environment | Tool | Instance or account | MCP server | Inventory |
 | --- | --- | --- | --- | --- |
+| production | temporal | Temporal Cloud | `temporal-cloud` | [production/temporal.md](production/temporal.md) |
+| production | r2 | Cloudflare R2 EU | none; S3 | [production/r2.md](production/r2.md) |
+| production | neon | DefaultOrga | `neon` | [production/neon.md](production/neon.md) |
+| production | railway | Default Workspace | `railway` | [production/railway.md](production/railway.md) |
 | staging | coolify | Instance workhorse, server localhost | `coolify-workhorse` | [staging/coolify.md](staging/coolify.md) |
 | shared | github | Account harald2013 | none, `gh` CLI | [shared/github.md](shared/github.md) |
 | shared | linear | Workspace tilia-at, team Tilia | `linear` | [shared/linear.md](shared/linear.md) |
 
-Production resources on Render, Temporal Cloud and Neon do not exist yet.
-Create `production/<tool>.md` when they are provisioned.
+Production resources are listed below. Deployment evidence is kept separately in `deploy/`.
 
 ## Connections
 
@@ -43,3 +46,9 @@ Create `production/<tool>.md` when they are provisioned.
 
 - Linear tickets `TIL-<number>` map to branches `feature/til-<number>-<name>`
   and PRs against `main`.
+
+### production
+
+- Railway API and worker use Neon reports and Temporal Cloud namespace default-namespace.rq4it.
+- Railway backup job writes only to Cloudflare R2 prefix report-example/production/.
+- World4You DNS routes the custom API domain to the Railway service.

@@ -10,6 +10,15 @@ COPY app.py ./
 RUN useradd --uid 10001 --create-home app
 USER app
 
+FROM postgres:16.6 AS backup
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-boto3 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY ops/backup.py /app/backup.py
+USER postgres
+ENTRYPOINT []
+CMD ["python3", "/app/backup.py"]
+
 FROM base AS worker
 CMD ["python", "-m", "reports.worker"]
 

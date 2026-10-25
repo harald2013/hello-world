@@ -15,7 +15,7 @@
 
 ## Pre-deploy migrations — [ADR 0004](docs/adr/0004-pre-deploy-migrations.md)
 
-- Render API deployments MUST run migrations from the new API image in the native pre-deploy phase and MUST stop on failure [ADR 0004].
+- Railway API deployments MUST run migrations from the new API image in the native pre-deploy phase and MUST stop on failure [ADR 0006].
 - Migrations MUST NOT run in normal API or worker startup commands or in a dedicated permanent service [ADR 0004].
 - Migration processes MUST return a nonzero exit code on failure and MUST NOT log secrets [ADR 0004].
 - Database migrations MUST serialize concurrent execution and use bounded waits and transactions where supported [ADR 0004].
@@ -29,6 +29,15 @@
 - PostgreSQL containers MUST NOT concurrently mount the same data volume; Coolify MUST use consistent container naming for this application [ADR 0005].
 - Agents MUST verify replacement behavior and subsequent database access on the target host [ADR 0005].
 - Agents MUST preserve and document damaged volumes; fresh volumes MUST be limited to disposable initial setup data or an explicitly approved recovery [ADR 0005].
+
+## Railway production — [ADR 0006](docs/adr/0006-railway-production.md)
+
+- Production API, application worker, and scheduled backup job MUST run as separate prebuilt image services on Railway in Amsterdam [ADR 0006].
+- Production MUST use Neon Free in AWS Frankfurt and the configured Temporal Cloud namespace [ADR 0006].
+- Frequent monitoring MUST use process health and MUST NOT keep Neon active with dependency queries [ADR 0006].
+- Backups MUST run every twelve hours and retain seven days in private EU Cloudflare R2 storage [ADR 0006].
+- Backup pruning MUST stay within report-example/production/ and MUST follow successful upload verification [ADR 0006].
+- Agents MUST verify restore, failed-release isolation, backup freshness monitoring, and failure notifications before claiming production acceptance [ADR 0006].
 
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 
