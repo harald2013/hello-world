@@ -34,7 +34,7 @@
 
 - Agents MUST document architectural decisions in German ADRs under the applicable scope's `docs/adr/` directory [ADR 0002].
 - Agents MUST use the next unused four-digit ADR number, `NNNN-topic.md` filenames, and `ADR NNNN` identifiers without renumbering existing ADRs [ADR 0002].
-- Agents MUST create missing ADRs and rule files from the Development Instructor MCP templates and replace every placeholder [ADR 0002].
+- Agents MUST create missing ADRs and rule files from the `development-mcp` MCP templates and replace every placeholder [ADR 0002].
 - ADRs MUST include status, date, scope, context, decision, considered alternatives, and consequences [ADR 0002].
 - ADRs MUST explain system boundaries, reasons, and accepted trade-offs and end with a relative link to the corresponding `AGENT_RULES.md` [ADR 0002].
 - ADRs MUST NOT contain SDK method names, exact line numbers, transient variable names, or implementation snapshots [ADR 0002].
