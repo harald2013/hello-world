@@ -53,8 +53,12 @@ vor Dauerbetrieb in der Neon-Konsole prüfen, damit das Compute-Kontingent reich
 | CNAME | api.report-example | 1yha62x4.up.railway.app |
 | TXT | _railway-verify.api.report-example | railway-verify=730f21febf635facad9aa4bffc837cce93c8c1ca0f3265b60365e27bdb91a895 |
 
-Werte stammen aus Railways Domain-Antwort. DNS-Verbreitung und Zertifikat sind
-noch zu prüfen. Der TXT-Wert ist ein öffentlicher DNS-Nachweis, kein API-Secret.
+Werte stammen aus Railways Domain-Antwort. Nach der DNS-Änderung meldet Railway
+Ownership verified und CNAME propagated. Die Zertifikatsausstellung scheitert
+jedoch mit „Let's Encrypt rate limit reached“, retryable=false. Ein echter
+HTTPS-Aufruf bestätigt einen Hostname-Mismatch; die Zertifikatsprüfung bleibt
+aktiv. HTTP-Smoke und öffentliche Freigabe warten deshalb auf ein gültiges
+Zertifikat. Nicht wiederholt neu anfordern, solange Railway keinen Retry erlaubt. Der TXT-Wert ist ein öffentlicher DNS-Nachweis, kein API-Secret.
 
 ## Offene Abnahme
 
