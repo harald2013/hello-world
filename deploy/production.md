@@ -1,7 +1,7 @@
 # Gemanagte Produktion
 
 Ziel ist der Betrieb eigener Anwendungscode-Images ohne selbst administrierte
-Produktionsserver. API und Worker laufen auf Render **oder** Railway,
+Produktionsserver. API und Worker laufen im gewählten Beispiel auf Render (Railway bleibt Alternative),
 Prozesssteuerung in Temporal Cloud, Anwendungsdaten in Neon. workhorse ist für
 Laufzeit und Wiederherstellung der Produktion keine Abhängigkeit.
 
@@ -25,11 +25,12 @@ wählen. Die Bezeichnungen der Dienste garantieren diese Eigenschaften nicht.
 4. `production.env.example` in Anbieter-Secrets und normale Variablen übertragen.
    Für Produktion eigene Zugangsdaten verwenden. Einen zufälligen API-Schlüssel
    mit mindestens 32 Zeichen vergeben und nur berechtigten Clients geben.
-5. Vor dem ersten Start mit dem API-Image `python -m reports.store` als einmaligen
-   Job ausführen. Dieselben Datenbank-/Temporal-Umgebungsvariablen setzen; der
-   Befehl prüft die Produktionskonfiguration und legt das Anwendungsschema an.
+5. Im API-Dienst die native Pre-Deploy-Phase für **jedes** Deployment gemäß
+   [Migrationsanleitung](migrations.md) konfigurieren. Sie verwendet das neue
+   API-Image und dessen Runtime-Variablen, auch beim ersten Deployment. Kein
+   zusätzlicher Dauer-Service und keine Migration im normalen Startbefehl.
 
-## Variante Render
+## Gewählt: Render
 
 - API als **Web Service / Existing Image** aus dem geprüften APIimage-Digest
   anlegen. Der vorhandene Startbefehl bindet an `0.0.0.0` und berücksichtigt
@@ -37,24 +38,26 @@ wählen. Die Bezeichnungen der Dienste garantieren diese Eigenschaften nicht.
 - Worker als **Background Worker / Existing Image** aus dem geprüften
   Workerimage-Digest anlegen. Standardbefehl unverändert lassen; kein
   eingehender Port und kein öffentlicher Webdienst sind erforderlich.
-- Im API-Dienst `python -m reports.store` als Pre-Deploy Command setzen
+- Im API-Dienst `/app/.venv/bin/python -m reports.store` als Pre-Deploy Command setzen
   (bei Render für bezahlte Dienste verfügbar). Der Befehl muss erfolgreich
-  enden, bevor API und anschließend Worker starten. Eine lokale
-  Entwicklungsmaschine erhält dafür keine Produktionsdaten oder Dumps.
+  enden, bevor die neue API-Version startet. Worker-Releases separat nach
+  erfolgreichem API-Deployment auslösen; die Plattform koordiniert beide Dienste
+  nicht automatisch. Eine lokale Entwicklungsmaschine erhält dafür keine
+  Produktionsdaten oder Dumps.
 
 Render unterstützt vorgebaute Images und Hintergrund-Worker:
 [Images](https://render.com/docs/deploying-an-image),
 [Background Workers](https://render.com/docs/background-workers),
 [Pre-Deploy Command](https://render.com/docs/deploys#pre-deploy-command).
 
-## Variante Railway
+## Alternative Railway (nicht eingerichtet)
 
 - Zwei getrennte Dienste aus den vorgebauten API-/Workerimages erstellen;
   keine Builds aus dem Repository konfigurieren.
 - API: öffentliche HTTPS-Domain, Healthcheck `/ready`, Startbefehl aus dem Image
   und den vom Anbieter gelieferten `PORT` verwenden.
 - Worker: Standardbefehl aus dem Workerimage verwenden, keine öffentliche Domain.
-- Im API-Dienst `python -m reports.store` als Pre-Deploy Command setzen und
+- Im API-Dienst `/app/.venv/bin/python -m reports.store` als Pre-Deploy Command setzen und
   dessen Erfolg vor dem ersten Worker-Start abwarten.
 
 Die konkreten Image-/Registry- und Job-Einstellungen beim Setup anhand der

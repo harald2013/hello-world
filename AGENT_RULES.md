@@ -13,6 +13,16 @@
 - Staging and production APIs MUST require an API token; production MUST enable Temporal TLS and database certificate verification [ADR 0003].
 - Agents MUST keep deployed resource metadata separate from deployment instructions and MUST NOT invent resource identifiers [ADR 0003].
 
+## Pre-deploy migrations — [ADR 0004](docs/adr/0004-pre-deploy-migrations.md)
+
+- Render API deployments MUST run migrations from the new API image in the native pre-deploy phase and MUST stop on failure [ADR 0004].
+- Migrations MUST NOT run in normal API or worker startup commands or in a dedicated permanent service [ADR 0004].
+- Migration processes MUST return a nonzero exit code on failure and MUST NOT log secrets [ADR 0004].
+- Database migrations MUST serialize concurrent execution and use bounded waits and transactions where supported [ADR 0004].
+- Schema changes MUST remain compatible with running API and worker versions; later schema changes MUST use versioned migrations [ADR 0004].
+- Worker releases MUST follow successful API pre-deploy completion; agents MUST NOT assume cross-service deployment ordering [ADR 0004].
+- Agents MUST verify migration success and rollback in containers and failed-release isolation on the target platform before claiming deployment acceptance [ADR 0004].
+
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 
 - Agents MUST document architectural decisions in German ADRs under the applicable scope's `docs/adr/` directory [ADR 0002].

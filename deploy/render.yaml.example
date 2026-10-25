@@ -1,0 +1,37 @@
+# Copy to render.yaml after choosing region/plan and tested image digests.
+# Apply the API service first; add the worker after the API pre-deploy succeeds.
+services:
+  - type: web
+    name: report-example-api
+    runtime: image
+    plan: starter
+    region: frankfurt
+    image:
+      url: ghcr.io/harald2013/hello-world-api@sha256:REPLACE_WITH_TESTED_DIGEST
+    preDeployCommand: /app/.venv/bin/python -m reports.store
+    healthCheckPath: /ready
+    envVars: &runtime
+      - key: APP_ENV
+        value: production
+      - key: TEMPORAL_TLS
+        value: "true"
+      - key: TEMPORAL_TASK_QUEUE
+        value: reports-v1
+      - key: DATABASE_URL
+        sync: false
+      - key: API_TOKEN
+        sync: false
+      - key: TEMPORAL_API_KEY
+        sync: false
+      - key: TEMPORAL_ADDRESS
+        sync: false
+      - key: TEMPORAL_NAMESPACE
+        sync: false
+  - type: worker
+    name: report-example-worker
+    runtime: image
+    plan: starter
+    region: frankfurt
+    image:
+      url: ghcr.io/harald2013/hello-world-worker@sha256:REPLACE_WITH_TESTED_DIGEST
+    envVars: *runtime

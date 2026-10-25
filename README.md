@@ -91,7 +91,8 @@ API und Worker sind Build-Ziele desselben Dockerfiles und laufen als Benutzer
 ohne Root-Rechte. Schema-Initialisierung verwendet das API-Image als einmaligen Job.
 
 - [Staging: einzelne Coolify-Anwendungen](deploy/staging.md)
-- [Produktion: Render oder Railway, Temporal Cloud und Neon](deploy/production.md)
+- [Produktion: Render, Temporal Cloud und Neon](deploy/production.md)
+- [Migrationen: Render Pre-Deploy und Container-Tests](deploy/migrations.md)
 - [Konfiguration und Betriebsprüfungen](deploy/operations.md)
 - [Architekturentscheidung](docs/adr/0003-report-example.md)
 

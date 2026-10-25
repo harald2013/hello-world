@@ -1,4 +1,5 @@
 import asyncio
+import sys
 
 from psycopg import AsyncConnection
 from psycopg.rows import dict_row
@@ -67,5 +68,17 @@ class Store:
             return await cursor.fetchone()
 
 
+def main() -> int:
+    print("Migration started", flush=True)
+    try:
+        asyncio.run(Store(Settings.from_env().database_url).migrate())
+    except Exception as error:
+        # Driver exceptions can contain connection credentials or input data.
+        print(f"Migration failed ({type(error).__name__})", file=sys.stderr, flush=True)
+        return 1
+    print("Migration completed", flush=True)
+    return 0
+
+
 if __name__ == "__main__":
-    asyncio.run(Store(Settings.from_env().database_url).migrate())
+    raise SystemExit(main())
