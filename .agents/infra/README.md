@@ -67,10 +67,6 @@ Every component of the system and the artifact that runs it per environment.
 - The image workflow also publishes `ghcr.io/harald2013/report-example-backup`
   for the Railway scheduled backup service. API and worker use the same image
   repositories as staging; tested digests are promoted without rebuilding.
-- Until they are switched under TIL-181, the Railway services `api`, `worker`
-  and `backup` still pull the former repositories
-  `ghcr.io/harald2013/hello-world-{api,worker,backup}` (see
-  [production/railway.md](production/railway.md)).
 - Railway API and worker use Neon `reports` and Temporal Cloud namespace
   `default-namespace.rq4it`.
 - Railway backup job writes only to Cloudflare R2 prefix
@@ -90,3 +86,5 @@ linked here; they are not live platform state.
   [production setup](../../deploy/production-setup.md): dated evidence
 - [UI rollout](../../deploy/ui-acceptance.md): dated evidence for the browser UI
   in staging and production
+- [Rename to report-example](../../deploy/rename-acceptance.md): dated evidence
+  for the switch to the renamed image repositories
