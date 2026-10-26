@@ -21,10 +21,10 @@ Every component of the system and the artifact that runs it per environment.
 
 | Component | Purpose | Source | local | staging | production |
 | --- | --- | --- | --- | --- | --- |
-| api | Authenticated HTTP API that stores reports and starts their workflows; also serves the static browser UI under `/ui/` | Image: `ghcr.io/harald2013/hello-world-api` | compose `api` | coolify `api` | railway `api` |
-| migration | One-off schema migration from the API image before the API starts | Image: `ghcr.io/harald2013/hello-world-api` | compose `migrate` | one-off container from the `api` image | railway `api` (pre-deploy) |
-| worker | Temporal worker that computes reports and writes results | Image: `ghcr.io/harald2013/hello-world-worker` | compose `worker` | coolify `worker` | railway `worker` |
-| backup | Scheduled job that dumps the database to object storage and prunes old dumps | Image: `ghcr.io/harald2013/hello-world-backup` | – | – | railway `backup` → cloudflare `report-example/production/` |
+| api | Authenticated HTTP API that stores reports and starts their workflows; also serves the static browser UI under `/ui/` | Image: `ghcr.io/harald2013/report-example-api` | compose `api` | coolify `api` | railway `api` |
+| migration | One-off schema migration from the API image before the API starts | Image: `ghcr.io/harald2013/report-example-api` | compose `migrate` | one-off container from the `api` image | railway `api` (pre-deploy) |
+| worker | Temporal worker that computes reports and writes results | Image: `ghcr.io/harald2013/report-example-worker` | compose `worker` | coolify `worker` | railway `worker` |
+| backup | Scheduled job that dumps the database to object storage and prunes old dumps | Image: `ghcr.io/harald2013/report-example-backup` | – | – | railway `backup` → cloudflare `report-example/production/` |
 | database | PostgreSQL for reports | Image: `postgres` / Managed: neon | compose `postgres` | coolify `postgres` | neon `reports` |
 | workflow engine | Temporal server and namespace for report workflows | Image: `temporalio/auto-setup` / Managed: temporal | compose `temporal` | coolify `temporal` | temporal `default-namespace.rq4it` |
 | workflow UI | Temporal web UI | Image: `temporalio/ui` / Managed: temporal | compose `temporal-ui` | coolify `temporal-ui` | temporal Cloud UI |
@@ -48,8 +48,8 @@ Every component of the system and the artifact that runs it per environment.
 ### staging
 
 - The workflow `Report example · Container images` publishes
-  `ghcr.io/harald2013/hello-world-api` and
-  `ghcr.io/harald2013/hello-world-worker`; the Coolify applications `api` and
+  `ghcr.io/harald2013/report-example-api` and
+  `ghcr.io/harald2013/report-example-worker`; the Coolify applications `api` and
   `worker` run these image repositories.
 - API https://workhorse.tail8fba42.ts.net:18443/ and Temporal UI
   https://workhorse.tail8fba42.ts.net:18444/ are tailnet-only through
@@ -64,9 +64,13 @@ Every component of the system and the artifact that runs it per environment.
 
 ### production
 
-- The image workflow also publishes `ghcr.io/harald2013/hello-world-backup`
+- The image workflow also publishes `ghcr.io/harald2013/report-example-backup`
   for the Railway scheduled backup service. API and worker use the same image
   repositories as staging; tested digests are promoted without rebuilding.
+- Until they are switched under TIL-181, the Railway services `api`, `worker`
+  and `backup` still pull the former repositories
+  `ghcr.io/harald2013/hello-world-{api,worker,backup}` (see
+  [production/railway.md](production/railway.md)).
 - Railway API and worker use Neon `reports` and Temporal Cloud namespace
   `default-namespace.rq4it`.
 - Railway backup job writes only to Cloudflare R2 prefix

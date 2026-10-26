@@ -52,8 +52,8 @@ its separate `coolify` network.
 | postgres | fsew7ydowsjgjbbnickyi65b | application | Image: `postgres` | Staging postgres; network alias `report-postgres`; not exposed |
 | temporal | 4gfrxde9n3p9frl40uchk8kp | application | Image: `temporalio/auto-setup` | Staging temporal; network alias `report-temporal`; not exposed |
 | temporal-ui | kswxe11wew0loawo3bjznsth | application | Image: `temporalio/ui` | Temporal UI; network alias `report-temporal-ui`; https://workhorse.tail8fba42.ts.net:18444/ (tailnet only), host loopback 127.0.0.1:18081 |
-| api | xjpuw1wkf44xr8kr7pw8frob | application | Image: `ghcr.io/harald2013/hello-world-api` | Staging API; network alias `report-api`; https://workhorse.tail8fba42.ts.net:18443/ (tailnet only), host loopback 127.0.0.1:18080 |
-| worker | dfubqqftacrok6fw7cqydmiz | application | Image: `ghcr.io/harald2013/hello-world-worker` | Staging worker; network alias `report-worker`; not exposed |
+| api | xjpuw1wkf44xr8kr7pw8frob | application | Image: `ghcr.io/harald2013/report-example-api` | Staging API; network alias `report-api`; https://workhorse.tail8fba42.ts.net:18443/ (tailnet only), host loopback 127.0.0.1:18080 |
+| worker | dfubqqftacrok6fw7cqydmiz | application | Image: `ghcr.io/harald2013/report-example-worker` | Staging worker; network alias `report-worker`; not exposed |
 
 PostgreSQL uses the named persistent volume `report-example-postgres-data-v2`
 (storage UUID `edcemtmh5vakw7axotdeiqo0`) at

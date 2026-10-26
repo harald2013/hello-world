@@ -13,7 +13,7 @@ erprobt.
 ## Kleine Browseroberfläche
 
 Nach lokalem Start `http://127.0.0.1:18000/ui/` öffnen. Die Seite zeigt
-„Hello World“ und ein kleines Formular für Zahlen. Mit „Report erstellen“ startet
+den Titel „Report example“ und ein kleines Formular für Zahlen. Mit „Report erstellen“ startet
 sie einen Workflow und zeigt anschließend Anzahl, Summe, Minimum, Maximum und
 Mittelwert. Ein späteres „Status erneut prüfen“ lädt nur den angelegten Bericht.
 

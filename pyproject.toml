@@ -1,5 +1,5 @@
 [project]
-name = "hello-world"
+name = "report-example"
 version = "1.0.0"
 description = "Portable report API and Temporal worker with PostgreSQL."
 requires-python = ">=3.12"
