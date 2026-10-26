@@ -35,8 +35,11 @@ Image tags are `sha-<full commit SHA>` in
 ## Pitfalls
 
 - Never push directly to `main`; changes reach it only through a PR.
-- Listing container packages through `gh api` needs the `read:packages`
-  scope; the default `gh` login lacks it.
+- Listing or deleting container packages through `gh api` needs the
+  `read:packages` or `delete:packages` scope; the default `gh` login lacks
+  them. The user adds them with
+  `gh auth refresh -h github.com -s read:packages,delete:packages`, which
+  needs a browser confirmation.
 
 ## References
 

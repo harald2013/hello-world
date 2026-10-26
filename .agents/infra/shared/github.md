@@ -22,10 +22,7 @@ harald2013
     ├── workflow Report example · Container images
     ├── package report-example-api
     ├── package report-example-worker
-    ├── package report-example-backup
-    ├── package hello-world-api (former name)
-    ├── package hello-world-worker (former name)
-    └── package hello-world-backup (former name)
+    └── package report-example-backup
 ```
 
 ## Artifacts
@@ -39,6 +36,3 @@ harald2013
 | report-example-api | ghcr.io/harald2013/report-example-api | container package | API image; Coolify staging application `api` |
 | report-example-worker | ghcr.io/harald2013/report-example-worker | container package | Worker image; Coolify staging application `worker` |
 | report-example-backup | ghcr.io/harald2013/report-example-backup | container package | Backup image for the Railway scheduled job |
-| hello-world-api | ghcr.io/harald2013/hello-world-api | container package | Former API image repository before the rename; no new images and no service uses it; kept for rollback to earlier digests |
-| hello-world-worker | ghcr.io/harald2013/hello-world-worker | container package | Former worker image repository before the rename; no new images and no service uses it; kept for rollback to earlier digests |
-| hello-world-backup | ghcr.io/harald2013/hello-world-backup | container package | Former backup image repository before the rename; no new images and no service uses it; kept for rollback to earlier digests |
