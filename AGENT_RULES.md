@@ -32,12 +32,10 @@
 
 ## Railway production — [ADR 0006](docs/adr/0006-railway-production.md)
 
-- Production API, application worker, and scheduled backup job MUST run as separate prebuilt image services on Railway in Amsterdam [ADR 0006].
-- Production MUST use Neon Free in AWS Frankfurt and the configured Temporal Cloud namespace [ADR 0006].
-- Frequent monitoring MUST use process health and MUST NOT keep Neon active with dependency queries [ADR 0006].
-- Backups MUST run every twelve hours and retain seven days in private EU Cloudflare R2 storage [ADR 0006].
-- Backup pruning MUST stay within report-example/production/ and MUST follow successful upload verification [ADR 0006].
-- Agents MUST verify restore, failed-release isolation, backup freshness monitoring, and failure notifications before claiming production acceptance [ADR 0006].
+- Production MUST follow the development MCP's `ADR-reference-architecture-production` and deviate only where ADR 0006 records it [ADR 0006].
+- Production services MUST run on Railway in Amsterdam, and the database MUST use Neon Free in AWS Frankfurt with fixed 0.25 CU compute [ADR 0006].
+- Backups MUST run every twelve hours and retain seven days under `report-example/production/` in the user's private EU Cloudflare R2 bucket [ADR 0006].
+- Agents MUST restrict Temporal queries and operations to the task queue `reports-v1` and this application's report IDs [ADR 0006].
 
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 

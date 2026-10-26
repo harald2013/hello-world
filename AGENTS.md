@@ -41,9 +41,9 @@ uv run python scripts/smoke.py
 
 See [README.md](README.md) for API usage and [deploy/](deploy/operations.md)
 for configuration. Staging uses individual images on workhorse. Production uses
-managed application hosting, Temporal Cloud and Neon. Read
-[.agents/infra/staging/coolify.md](.agents/infra/staging/coolify.md) for existing
-staging resources before using Coolify tools; production resources are listed in [.agents/infra/README.md](.agents/infra/README.md).
+managed application hosting, Temporal Cloud and Neon. The `System` table in
+[.agents/infra/README.md](.agents/infra/README.md) shows where each component
+runs per environment and links the inventories.
 
 ## Tool context
 
@@ -57,9 +57,10 @@ identifiers in [.agents/infra/README.md](.agents/infra/README.md) and
 Keep tool usage, stable resource metadata, deployment procedures, and dated
 acceptance evidence separate. Inventories contain no deployed versions, commit
 SHAs, or runtime status. Read that state live before deployments. After editing
-`.agents/tools/` or `.agents/infra/`, validate each changed file with
-`standards_validate_content` for `infra`; use `validate_coolify_md` for Coolify
-inventories. Fix every validation error.
+`.agents/tools/` or `.agents/infra/`, validate each changed file, Coolify
+inventories included, with `standards_validate_content` for `infra` and fix
+every validation error. Before planning or changing an environment, read its
+reference architecture (`get_agent_rules(["reference-architecture"])`).
 
 ## Verification
 

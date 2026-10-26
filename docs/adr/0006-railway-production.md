@@ -15,33 +15,31 @@ dessen Migrations- und Kompatibilitätsanforderungen bleiben gültig.
 
 ## Entscheidung
 
-API und Worker laufen als getrennte, vorgebaute und in Staging geprüfte Images
-auf Railway. Ein temporärer nativer Pre-Deploy-Prozess des API-Dienstes migriert
-die Neon-Datenbank. Erst nach erfolgreichem API-Deployment wird der Worker
-aktualisiert. Die Datenbank liegt in Neon Free in AWS Frankfurt. Railway läuft
-in Amsterdam, weil Railway keine Region Frankfurt anbietet. Temporal Cloud
-übernimmt die Prozesssteuerung; der Benutzer stellt Namespace und Zugang bereit.
-Alle Verbindungen zu Datenbank und Temporal verwenden TLS mit Zertifikatsprüfung.
-Render ist für diese Produktion keine Abhängigkeit.
+Produktion folgt der Referenzarchitektur `ADR-reference-architecture-production`
+des `development-mcp`: vorgebaute, in Staging geprüfte Images auf Railway,
+Pre-Deploy-Migration der API vor dem Worker, Neon mit TLS über den direkten
+Endpoint, Temporal Cloud, unabhängige Backups nach Cloudflare R2, getrennte
+Healthchecks für Deployment und Monitoring sowie deren Abnahmeliste. Dieses ADR
+hält nur die projektspezifischen Werte und Abweichungen fest.
 
-Die Plattform prüft die API-Abhängigkeiten beim Deployment. Häufige externe
-Überwachung verwendet dagegen den reinen Prozess-Healthcheck, damit eine ruhende
-Neon-Datenbank nicht durch Monitoring dauerhaft aktiv gehalten wird. Das tatsächliche
-Suspend-Verhalten und der Verbrauch werden am Anbieter überprüft.
+Projektspezifische Werte:
 
-Ein eigener kurzlebiger Backup-Container auf Railway erstellt alle zwölf Stunden
-einen PostgreSQL-Dump. Gegenüber dem Ziel von 24 Stunden erlaubt dies einen
-zeitlichen Puffer. Sicherungen liegen sieben Tage im privaten EU-Bucket des
-unabhängigen Anbieters Cloudflare R2. Nur das für dieses Projekt reservierte
-Präfix darf bereinigt werden, und erst nach erfolgreichem Upload. Container-
-Dateien sind temporär und werden nicht auf einer lokalen Entwicklerstation
-abgelegt. Eine echte Wiederherstellungsprobe und die Überwachung fehlgeschlagener
-oder ausbleibender Backups gehören zur Produktionsabnahme.
+- Railway-Hobby-Workspace in Amsterdam, weil Railway keine Region Frankfurt
+  anbietet; Neon Free in AWS Frankfurt mit fester Compute-Größe von 0.25 CU.
+- Budget 50 Euro monatlich, höchstens 100 Berichte pro Tag; RPO und RTO je
+  24 Stunden.
+- Backups alle zwölf Stunden mit sieben Tagen Aufbewahrung im privaten
+  EU-Bucket des Benutzers unter dem Präfix `report-example/production/`.
+- Die API-Domain liegt in der Zone des Benutzers bei World4You.
+- Benachrichtigungen gehen an die E-Mail-Adresse des Benutzers und werden in
+  Railway eingerichtet.
 
-Die API verwendet die eigene Domain bei World4You. Benachrichtigungen gehen an
-die bisher als Render-Kontoadresse bezeichnete E-Mail-Adresse des Benutzers;
-mit dem Plattformwechsel müssen sie in Railway eingerichtet und geprüft werden.
-Zugangsdaten werden ausschließlich als Anbieter-Secrets gespeichert.
+Abweichung von der Referenz: Der Benutzer stellt einen bestehenden
+Temporal-Cloud-Namespace bereit, der auch Workflows anderer Anwendungen
+enthalten kann, statt eines eigenen Namespace für diese Anwendung und Umgebung.
+Ein eigener Namespace verursacht für das kleine Beispiel zusätzlichen
+Verwaltungsaufwand. Abfragen bleiben deshalb auf die Task Queue und die
+Berichtskennungen dieser Anwendung beschränkt.
 
 ## Betrachtete Alternativen
 
@@ -60,8 +58,8 @@ Datenbank und Backup-Speicher haben getrennte Verantwortlichkeiten und Secrets.
 Railway rechnet Verbrauch über das enthaltene Hobby-Guthaben hinaus ab; das
 Guthaben ist keine Kostenobergrenze. Neon Free hat begrenzte Compute-Ressourcen.
 Die Wiederherstellungsziele sind Betriebsziele, keine durch diese Entscheidung
-bewiesenen Garantien. Für eine abgeschlossene Abnahme fehlen ohne erfolgreiche
-Zielplattformtests ausdrücklich die Nachweise zu Release-Isolation und Restore.
+bewiesenen Garantien. Als abgenommen gilt Produktion erst mit den Nachweisen,
+die die Referenzarchitektur verlangt; sie stehen in `deploy/production-setup.md`.
 
 Die technischen Leitplanken stehen in der
 [AGENT_RULES.md](../../AGENT_RULES.md).

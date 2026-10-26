@@ -2,7 +2,8 @@
 
 ## Instance
 
-- Instance or account: Temporal Cloud, namespace supplied by user
+- Instance or account: Temporal Cloud account of the user; namespace supplied by the user
+- Plan and region: not visible to agents; read them in the Temporal Cloud console
 - URL: https://cloud.temporal.io
 - MCP server: `temporal-cloud`, tools named `temporal_cloud__…`
 
@@ -18,7 +19,5 @@ Temporal Cloud
 
 | Name | ID | Kind | Description |
 | --- | --- | --- | --- |
-| default-namespace.rq4it | default-namespace.rq4it | namespace | User-supplied endpoint default-namespace.rq4it.tmprl.cloud:7233; Railway API and worker connect using TLS |
-
-Credentials originate from a namespace-scoped Temporal Cloud key entered as
-TEMPORAL_API_KEY in Railway, used by API and worker. Do not read unrelated workflows.
+| default-namespace.rq4it | default-namespace.rq4it | namespace | gRPC endpoint `default-namespace.rq4it.tmprl.cloud:7233`; TLS with a namespace-scoped API key from `TEMPORAL_API_KEY`; may also hold workflows of other applications of the user |
+| reports-v1 | reports-v1 | task queue | Report workflows and activities of the Railway `worker` |
