@@ -4,8 +4,9 @@ Das Repository `harald2013/hello-world` heißt seit 2026-10-26
 `harald2013/report-example` (TIL-181). Der Image-Workflow bildet die Namen aus
 dem Repository und veröffentlicht seitdem unter
 `ghcr.io/harald2013/report-example-{api,worker,backup}`. Die früheren Packages
-`hello-world-*` bleiben für Rollbacks auf ältere Digests erhalten; kein Dienst
-nutzt sie mehr.
+`hello-world-*` nutzt kein Dienst mehr; sie wurden am 2026-10-26 nach
+Freigabe durch den Nutzer gelöscht. Rollbacks auf Digests vor der Umbenennung
+sind damit nicht mehr möglich.
 
 Revision: `e477bf2b73eea51fbc0fe086d01b636a89e98837`. Gegenüber dem
 UI-Rollout ändern sich nur Projektname und UI-Titel; das Schema bleibt gleich.
