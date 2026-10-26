@@ -39,6 +39,6 @@ harald2013
 | report-example-api | ghcr.io/harald2013/report-example-api | container package | API image; Coolify staging application `api` |
 | report-example-worker | ghcr.io/harald2013/report-example-worker | container package | Worker image; Coolify staging application `worker` |
 | report-example-backup | ghcr.io/harald2013/report-example-backup | container package | Backup image for the Railway scheduled job |
-| hello-world-api | ghcr.io/harald2013/hello-world-api | container package | Former API image repository; no new images; Railway `api` until switched (TIL-181); keep for rollback |
-| hello-world-worker | ghcr.io/harald2013/hello-world-worker | container package | Former worker image repository; no new images; Railway `worker` until switched (TIL-181); keep for rollback |
-| hello-world-backup | ghcr.io/harald2013/hello-world-backup | container package | Former backup image repository; no new images; Railway `backup` until switched (TIL-181); keep for rollback |
+| hello-world-api | ghcr.io/harald2013/hello-world-api | container package | Former API image repository before the rename; no new images and no service uses it; kept for rollback to earlier digests |
+| hello-world-worker | ghcr.io/harald2013/hello-world-worker | container package | Former worker image repository before the rename; no new images and no service uses it; kept for rollback to earlier digests |
+| hello-world-backup | ghcr.io/harald2013/hello-world-backup | container package | Former backup image repository before the rename; no new images and no service uses it; kept for rollback to earlier digests |
