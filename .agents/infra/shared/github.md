@@ -7,7 +7,8 @@ checks, image tags and commits live. Never store secrets.
 
 ## Instance
 
-- Instance or account: github.com, account `harald2013`
+- Instance or account: github.com, personal account `harald2013`
+- Plan and region: GitHub Free; region not applicable
 - URL: https://github.com/harald2013/hello-world
 - MCP server: none; use the `gh` CLI
 
@@ -28,7 +29,7 @@ harald2013
 
 | Name | ID | Kind | Description |
 | --- | --- | --- | --- |
-| harald2013/hello-world | 1406819325 | repository | Remote `git@github.com:harald2013/hello-world.git`; default branch `main`, changes only through PRs |
+| harald2013/hello-world | 1406819325 | repository | Public; remote `git@github.com:harald2013/hello-world.git`; default branch `main` without branch protection, changes only through PRs |
 | main | main | branch | PR base; source of staging images |
 | Report example · Tests and checks | .github/workflows/ci.yml | workflow | Runs on PRs and pushes to `main` |
 | Report example · Container images | .github/workflows/image.yml | workflow | Pushes to `main` and `feature/**` publish API, worker and backup images tagged `sha-<commit>` |

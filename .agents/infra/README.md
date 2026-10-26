@@ -10,23 +10,38 @@ environment, in `.agents/infra/shared/<tool>.md`. Never store secrets.
 
 | Environment | Purpose | Branch |
 | --- | --- | --- |
-| local | Synthetic-data stack from `compose.yml`; never deployed to Coolify | feature branch |
-| staging | Individual images on workhorse with synthetic data ([staging](../../deploy/staging.md)) | image tags `sha-<commit>` from `main` or `feature/**` |
-| production | Railway, Temporal Cloud and Neon ([production](../../deploy/production.md)) | main |
+| local | Synthetic-data stack from `compose.yml`; never deployed | feature branch |
+| staging | Individual images on workhorse with synthetic data | image tags `sha-<commit>` from `main` or `feature/**` |
+| production | Railway, Neon, Temporal Cloud and Cloudflare R2 | main |
+
+## System
+
+Every component of the system and the artifact that runs it per environment.
+`local` names the Compose service; there is no local inventory.
+
+| Component | Purpose | Source | local | staging | production |
+| --- | --- | --- | --- | --- | --- |
+| api | Authenticated HTTP API that stores reports and starts their workflows | Image: `ghcr.io/harald2013/hello-world-api` | compose `api` | coolify `api` | railway `api` |
+| migration | One-off schema migration from the API image before the API starts | Image: `ghcr.io/harald2013/hello-world-api` | compose `migrate` | one-off container from the `api` image | railway `api` (pre-deploy) |
+| worker | Temporal worker that computes reports and writes results | Image: `ghcr.io/harald2013/hello-world-worker` | compose `worker` | coolify `worker` | railway `worker` |
+| backup | Scheduled job that dumps the database to object storage and prunes old dumps | Image: `ghcr.io/harald2013/hello-world-backup` | – | – | railway `backup` → cloudflare `report-example/production/` |
+| database | PostgreSQL for reports | Image: `postgres` / Managed: neon | compose `postgres` | coolify `postgres` | neon `reports` |
+| workflow engine | Temporal server and namespace for report workflows | Image: `temporalio/auto-setup` / Managed: temporal | compose `temporal` | coolify `temporal` | temporal `default-namespace.rq4it` |
+| workflow UI | Temporal web UI | Image: `temporalio/ui` / Managed: temporal | compose `temporal-ui` | coolify `temporal-ui` | temporal Cloud UI |
+| DNS | Routes the public API domain to the platform | Managed: world4you | – | – | world4you `api.report-example` |
 
 ## Tools per environment
 
 | Environment | Tool | Instance or account | MCP server | Inventory |
 | --- | --- | --- | --- | --- |
+| production | railway | Default Workspace, Hobby | `railway` | [production/railway.md](production/railway.md) |
+| production | neon | DefaultOrga, Free | `neon` | [production/neon.md](production/neon.md) |
 | production | temporal | Temporal Cloud | `temporal-cloud` | [production/temporal.md](production/temporal.md) |
-| production | r2 | Cloudflare R2 EU | none; S3 | [production/r2.md](production/r2.md) |
-| production | neon | DefaultOrga | `neon` | [production/neon.md](production/neon.md) |
-| production | railway | Default Workspace | `railway` | [production/railway.md](production/railway.md) |
+| production | cloudflare | Cloudflare account, R2 EU | none; S3 | [production/cloudflare.md](production/cloudflare.md) |
+| production | world4you | Customer account, zone ratzberger.net | none; web interface | [production/world4you.md](production/world4you.md) |
 | staging | coolify | Instance workhorse, server localhost | `coolify-workhorse` | [staging/coolify.md](staging/coolify.md) |
 | shared | github | Account harald2013 | none, `gh` CLI | [shared/github.md](shared/github.md) |
 | shared | linear | Workspace tilia-at, team Tilia | `linear` | [shared/linear.md](shared/linear.md) |
-
-Production resources are listed below. Deployment evidence is kept separately in `deploy/`.
 
 ## Connections
 
@@ -49,6 +64,23 @@ Production resources are listed below. Deployment evidence is kept separately in
 
 ### production
 
-- Railway API and worker use Neon reports and Temporal Cloud namespace default-namespace.rq4it.
-- Railway backup job writes only to Cloudflare R2 prefix report-example/production/.
-- World4You DNS routes the custom API domain to the Railway service.
+- The image workflow also publishes `ghcr.io/harald2013/hello-world-backup`
+  for the Railway scheduled backup service. API and worker use the same image
+  repositories as staging; tested digests are promoted without rebuilding.
+- Railway API and worker use Neon `reports` and Temporal Cloud namespace
+  `default-namespace.rq4it`.
+- Railway backup job writes only to Cloudflare R2 prefix
+  `report-example/production/`.
+- World4You DNS routes `api.report-example.ratzberger.net` to the Railway
+  custom domain of the service `api`.
+
+## Deployment documentation
+
+Procedures and dated acceptance evidence live outside `.agents/` and are only
+linked here; they are not live platform state.
+
+- [Operations](../../deploy/operations.md): release and rollback
+- [Staging](../../deploy/staging.md): Coolify setup
+- [Production](../../deploy/production.md): Railway, Neon, Temporal Cloud and R2 setup
+- [Staging acceptance](../../deploy/staging-acceptance.md) and
+  [production setup](../../deploy/production-setup.md): dated evidence

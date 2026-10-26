@@ -7,7 +7,8 @@ Never store secrets.
 
 ## Instance
 
-- Instance or account: workspace `tilia-at`
+- Instance or account: workspace TiliaWS (`afc25070-7172-4442-8d8c-032c51eb6d2a`), URL key `tilia-at`
+- Plan and region: not recorded; region not applicable
 - URL: https://linear.app/tilia-at
 - MCP server: `linear`, tools named `linear__…` through MCP Jungle
 

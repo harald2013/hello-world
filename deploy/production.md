@@ -27,8 +27,15 @@ separat erfasst. Ein angelegter Dienst ist noch kein erfolgreiches Deployment.
 
 1. Neon-Datenbank und Temporal-Zugang vorbereiten. `DATABASE_URL` verwendet
    `sslmode=verify-full`; `PGSSLROOTCERT=/etc/ssl/certs/ca-certificates.crt`.
-2. API und Worker erhalten die Runtime-Werte aus `production.env.example`.
-   `TEMPORAL_API_KEY` und `API_TOKEN` sind Secrets; Produktions-TLS einschalten.
+2. Gemeinsame Runtime-Werte aus `production.env.example` einmal als Shared
+   Variables der Railway-Umgebung definieren und in API und Worker referenzieren.
+   `DATABASE_URL` und `PGSSLROOTCERT` auch im Backup-Dienst aus derselben Quelle
+   referenzieren. `TEMPORAL_API_KEY` und `API_TOKEN` als Secrets behandeln;
+   Produktions-TLS einschalten. Dienstspezifische Werte wie Port und R2-Zugang
+   verbleiben beim jeweiligen Dienst. Vor Änderungen die bestehenden Variablen
+   und Referenzen prüfen, ohne ihre Werte auszugeben. Die bisherige
+   [Aufbaudokumentation](production-setup.md) belegt noch keine Umstellung auf
+   Shared Variables.
 3. API: geprüften Staging-Digest verwenden, PORT=8000; native Pre-Deploy-Phase
    `/app/.venv/bin/python -m reports.store`; Healthcheck `/ready`.
 4. Erst nach erfolgreicher Migration und API-Readiness das passende Workerimage

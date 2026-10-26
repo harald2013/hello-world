@@ -10,27 +10,25 @@
 
 ### Inspect production
 
-Read `.agents/infra/production/railway.md`; use `describe_environment` with explicit project and environment IDs.
+Read `.agents/infra/production/railway.md`; use `describe-environment` with
+explicit project and environment IDs. It lists services, image sources,
+regions, replicas, cron schedules and shared variable names without values.
 
 ### Prepare an image service
 
-Create an empty service, configure it and its variables, then attach the tested image. Stage worker image changes until API migration and readiness succeed.
+Create an empty service, configure it and its variables, then attach the tested
+image. Stage worker image changes until API migration and readiness succeed.
+
+### Run the backup job once
+
+Stage `cronSchedule=null` with the normal image start command, inspect the
+patch and accept it; check the execution logs, then restore the twelve-hour
+schedule. Switching between cron and one-off operation needs a fresh staged
+configuration commit; redeploying an older cron build alone did not run the job.
 
 ## Pitfalls
 
-- `accept_deploy` commits the entire environment patch: inspect it first.
-- Never print `list_variables` values; sealed variables must not be recreated.
-- Image registry credentials cannot be supplied through this MCP; set them in the dashboard if needed.
-
-### Verify a scheduled image job
-
-A successful cron deployment only proves the schedule was registered. Verify
-execution logs separately. For a one-off check, stage cronSchedule=null and the
-normal image start command, inspect the patch and accept it; restore the twelve-
-hour schedule after the check. Do not treat a redeploy without execution logs as
-a completed backup. A fresh staged configuration commit is required when changing
-between cron and one-off operation; redeploying an older cron build alone did
-not execute the task in this setup.
+- Tool-wide pitfalls are served by `get_agent_rules(["railway"])`.
 
 ## References
 

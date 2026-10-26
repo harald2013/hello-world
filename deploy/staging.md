@@ -61,8 +61,11 @@ für Temporals Ausführungshistorie; das ist ausschließlich ein Demo-/Staging-A
    Bereitschaft des Namespace prüfen; bis dahin API/Worker nicht starten.
 3. Temporal UI mit `TEMPORAL_ADDRESS=report-temporal:7233` starten. Die UI
    ausschließlich privat zugänglich machen.
-4. API-/Worker-Konfiguration anhand `staging.env.example` als Coolify-Secrets
-   und normale Variablen setzen. Zugangsdaten im Datenbank-URI URL-kodieren.
+4. API-/Worker-Konfiguration anhand `staging.env.example` vorbereiten. Identische
+   Werte einmal als Coolify Shared Variables definieren und bei den Diensten
+   referenzieren; sensible Werte als Secrets behandeln. Zugangsdaten im
+   Datenbank-URI URL-kodieren. Bestehende Einzelwerte erst nach Prüfung der
+   Referenzen umstellen; die bisherigen Nachweise belegen keine solche Umstellung.
 5. Als einmaligen Job das geprüfte API-Image mit `python -m reports.store`
    im selben Netz und mit denselben Variablen starten. Exitcode 0 abwarten.
    Der Job initialisiert das Schema und ist keine dauerhaft laufende Anwendung.
@@ -85,6 +88,27 @@ starten. Derselbe Auftrag muss anschließend fertig werden. Den lokalen
 Die tatsächlich eingerichteten URLs, UUIDs, Aliase und Volumes gehören nach
 `.agents/infra/staging/coolify.md`. Aktuelle Versionen und Deployment-Ergebnisse live prüfen; sie
 gehören nicht in diese stabile Ressourcenübersicht.
+
+## Abweichung von den aktuellen Deployment-Regeln
+
+Die Schritte oben beschreiben den bisherigen Aufbau mit separatem Schemajob.
+Die aktuellen `development-mcp`-Regeln verlangen für Coolify stattdessen eine
+Migration aus dem neuen Image im Entrypoint, vor dem API-Prozess und durch einen
+Datenbank-Lock geschützt. Coolifys Pre-Deploy-Befehl läuft im alten Container;
+ein fehlgeschlagener Post-Deploy-Befehl verhindert den Rollout nicht. Beide
+Phasen eignen sich deshalb nicht als Ersatz.
+
+Das aktuelle API-Image startet noch ohne Migration. Die Entrypoint-Umstellung
+und ihr Fehlerfall müssen implementiert und auf Staging geprüft werden, bevor
+der Aufbau als regelkonform bezeichnet werden kann. Dazu sind auch die
+bisherigen projektweiten Migrationsregeln und ihr ADR gemeinsam anzupassen.
+Railways Migration aus dem neuen Image in der nativen Pre-Deploy-Phase bleibt
+der vorgesehene Produktionsablauf.
+
+Für Updates des selbst betriebenen PostgreSQL sind außerdem ein getesteter
+Updateplan und ein vom Benutzer genehmigtes Wartungsfenster erforderlich.
+Automatische und Rolling-Updates ausschalten; ein explizites Image-Release
+verwenden. Die bestehende Stop-vor-Start-Vorgabe gilt weiterhin.
 
 ## Konfiguration der installierten Coolify-Version
 
