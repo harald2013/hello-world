@@ -28,8 +28,8 @@ python3 -B scripts/git_push.py   <repository> [remote] [base]
 ### Find the image of a commit
 
 Image tags are `sha-<full commit SHA>` in
-`ghcr.io/harald2013/hello-world-api` and
-`ghcr.io/harald2013/hello-world-worker`; check the run of
+`ghcr.io/harald2013/report-example-api` and
+`ghcr.io/harald2013/report-example-worker`; check the run of
 `Report example · Container images` with `gh run list --workflow image.yml`.
 
 ## Pitfalls

@@ -117,7 +117,7 @@ def test_public_ui_never_embeds_token_or_queries_dependencies(client, dependenci
     page = client.get("/ui/")
     assert page.status_code == 200
     assert "text/html" in page.headers["content-type"]
-    assert "Hello World" in page.text
+    assert "<h1>Report example" in page.text
     assert "test-token" not in page.text
     assert client.get("/ui/app.js").status_code == 200
     assert client.get("/ui/style.css").status_code == 200
