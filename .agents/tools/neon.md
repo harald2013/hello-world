@@ -10,17 +10,19 @@
 
 ### Inspect production
 
-Use list_projects and list_postgres_endpoints with IDs from `.agents/infra/production/neon.md`.
+Use `describe_project` and `list_postgres_endpoints` with IDs from
+`.agents/infra/production/neon.md`.
 
 ### Transfer the connection string
 
-Call get_connection_string and pass the result directly to Railway variables without printing it. Require sslmode=verify-full and the container CA bundle.
+Call `get_connection_string` and pass the result directly to Railway variables
+without printing it. Require `sslmode=verify-full` and the container CA bundle.
+Use the direct host of the endpoint for the application, migrations and backups.
 
 ## Pitfalls
 
-- Free accounts reject explicitly setting suspend_timeout_seconds during project creation (HTTP 412). Omit the setting and read the actual endpoint configuration.
-- get_connection_string can return a pooler hostname while pooler_enabled is false. Use the direct host from list_postgres_endpoints for this deployment and for migrations/backups.
-- Keep initial compute fixed at 0.25 CU and watch the Free compute allowance.
+- Keep compute fixed at 0.25 CU and watch the Free compute allowance; automatic
+  suspend is not configured (`suspend_timeout_seconds=0`).
 
 ## References
 

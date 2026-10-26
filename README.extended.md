@@ -5,9 +5,10 @@ und [Temporal UI](https://workhorse.tail8fba42.ts.net:18444/) sind im Tailnet
 zugänglich. [.agents/infra/staging/coolify.md](.agents/infra/staging/coolify.md) enthält die Ressourcenübersicht;
 [deploy/staging.md](deploy/staging.md) beschreibt Konfiguration und Betrieb.
 Der API-Schlüssel wird gezielt aus dem Laufzeit-Secret `API_TOKEN` der
-API-Anwendung in Coolify abgerufen. Produktion auf Railway ist vorbereitet,
-aber noch nicht angelegt. Die Vorlage wird vor der Ableitung allgemeiner
-Development-MCP-Regeln praktisch erprobt.
+API-Anwendung in Coolify abgerufen. Produktion läuft auf Railway; Aufbau und
+offene Abnahmepunkte stehen in [deploy/production-setup.md](deploy/production-setup.md).
+Die Vorlage wird vor der Ableitung allgemeiner Development-MCP-Regeln praktisch
+erprobt.
 
 ## Kleine Browseroberfläche
 

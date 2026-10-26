@@ -23,9 +23,26 @@ Schema verwendet eine additive Tabelle. Spätere Schemaänderungen benötigen
 versionierte Migrationen mit Rückwärtskompatibilität; `CREATE TABLE IF NOT EXISTS`
 aktualisiert keine bestehende Tabelle.
 
+## Gemeinsame Runtime-Konfiguration
+
+Werte, die mehrere Dienste derselben Umgebung identisch benötigen, einmal in
+den Shared Variables der Plattform definieren und in den Diensten referenzieren.
+Das betrifft insbesondere Datenbankzugang sowie die gemeinsame API-/Worker-
+Konfiguration für Temporal. Geheimnisse bleiben in den Secret-Einstellungen der
+Plattform; keine Werte in Inventar, Nachweise oder Logs kopieren. Lokal wird
+weiter die Compose-Konfiguration verwendet.
+
+Die Inventare unter `.agents/infra/` beschreiben bestehende Ressourcen und
+Verbindungen. Die Dateien unter `.agents/tools/` erklären den erprobten
+Werkzeugzugriff. Deploymentabläufe stehen hier und in den Umgebungsanleitungen;
+datierte Abnahmen halten Digests und Prüfergebnisse getrennt davon fest.
+Historische Abnahmen ersetzen keine Live-Prüfung der Zielplattform.
+
 ## Version übernehmen und zurücksetzen
 
-1. Image-Workflow baut und prüft eine Revision und veröffentlicht ihre zwei Images.
+1. Image-Workflow baut und prüft eine Revision und veröffentlicht getrennte Images
+   für API, Worker und Backup. API und Worker bilden ein gemeinsames Release-Paar;
+   Änderungen am Backupimage benötigen zusätzlich die Backup-/Restore-Prüfung.
 2. In Staging genau diese Images starten und den Smoke-/Wiederanlauftest ausführen.
 3. Image-Digests sowie Konfiguration der letzten guten Version im Release-Nachweis
    festhalten. In Produktion dieselben Digests einsetzen.
