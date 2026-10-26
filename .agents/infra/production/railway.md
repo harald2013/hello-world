@@ -12,6 +12,10 @@
 Default Workspace
 └── project report-example
     └── environment production
+        ├── service api
+        │   └── custom domain api.report-example.ratzberger.net
+        ├── service worker
+        └── service backup
 ```
 
 ## Artifacts

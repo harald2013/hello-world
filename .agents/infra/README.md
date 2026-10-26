@@ -26,7 +26,13 @@ environment, in `.agents/infra/shared/<tool>.md`. Never store secrets.
 | shared | github | Account harald2013 | none, `gh` CLI | [shared/github.md](shared/github.md) |
 | shared | linear | Workspace tilia-at, team Tilia | `linear` | [shared/linear.md](shared/linear.md) |
 
-Production resources are listed below. Deployment evidence is kept separately in `deploy/`.
+Stable resource identifiers are listed in the linked inventories. Deployment
+procedures and dated acceptance evidence are kept separately in `deploy/`.
+Read [operations](../../deploy/operations.md) for release and rollback steps,
+[staging](../../deploy/staging.md) for Coolify, and
+[production](../../deploy/production.md) for Railway. The dated evidence is in
+[staging acceptance](../../deploy/staging-acceptance.md),
+[production setup](../../deploy/production-setup.md); it is not live platform state.
 
 ## Connections
 
@@ -49,6 +55,9 @@ Production resources are listed below. Deployment evidence is kept separately in
 
 ### production
 
+- The image workflow also publishes `ghcr.io/harald2013/hello-world-backup`
+  for the Railway scheduled backup service. API and worker use the same image
+  repositories as staging; tested digests are promoted without rebuilding.
 - Railway API and worker use Neon reports and Temporal Cloud namespace default-namespace.rq4it.
 - Railway backup job writes only to Cloudflare R2 prefix report-example/production/.
 - World4You DNS routes the custom API domain to the Railway service.
