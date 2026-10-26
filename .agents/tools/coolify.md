@@ -30,6 +30,12 @@ Read the application live with `get_application(uuid=<uuid>)`, change only
 the image tag, deploy, and verify the result in Coolify. Version-only changes
 do not touch the inventory.
 
+### Check staging without exporting the API token
+
+Read the public UI assets over the tailnet HTTPS URL. For authenticated report
+checks, use SSH workhorse and docker exec inside the unique API container; read
+API_TOKEN only from that container's environment and keep it out of stdout.
+
 ## Pitfalls
 
 - The MCP tool supports neither `ports_mappings` nor command health checks;

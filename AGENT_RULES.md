@@ -37,6 +37,13 @@
 - Backups MUST run every twelve hours and retain seven days under `report-example/production/` in the user's private EU Cloudflare R2 bucket [ADR 0006].
 - Agents MUST restrict Temporal queries and operations to the task queue `reports-v1` and this application's report IDs [ADR 0006].
 
+## Browser UI — [ADR 0007](docs/adr/0007-simple-browser-ui.md)
+
+- The UI MUST use static assets in the API image and existing same-origin report APIs [ADR 0007].
+- UI assets MUST NOT contain secrets; browser API tokens MUST NOT enter URLs or persistent storage [ADR 0007].
+- The public UI shell MUST NOT expose application data or weaken report API authentication [ADR 0007].
+- UI results MUST be rendered as text and dependency polling MUST be bounded and initiated by user actions [ADR 0007].
+
 ## Architecture documentation — [ADR 0002](docs/adr/0002-architecture-documentation.md)
 
 - Agents MUST document architectural decisions in German ADRs under the applicable scope's `docs/adr/` directory [ADR 0002].

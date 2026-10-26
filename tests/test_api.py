@@ -110,3 +110,19 @@ def test_readiness_detects_database_failure(client, dependencies):
 def test_readiness_detects_temporal_failure(client, dependencies):
     dependencies[1].service_client.check_health.return_value = False
     assert client.get("/ready").status_code == 503
+
+
+def test_public_ui_never_embeds_token_or_queries_dependencies(client, dependencies):
+    client.headers.pop("Authorization")
+    page = client.get("/ui/")
+    assert page.status_code == 200
+    assert "text/html" in page.headers["content-type"]
+    assert "Hello World" in page.text
+    assert "test-token" not in page.text
+    assert client.get("/ui/app.js").status_code == 200
+    assert client.get("/ui/style.css").status_code == 200
+    dependencies[0].ready.assert_not_called()
+    dependencies[0].get.assert_not_called()
+    dependencies[1].start_workflow.assert_not_called()
+    dependencies[1].service_client.check_health.assert_not_called()
+    assert client.get("/").status_code == 401

@@ -2,12 +2,14 @@ import asyncio
 import secrets
 from contextlib import asynccontextmanager
 from datetime import timedelta
+from pathlib import Path
 from uuid import UUID, uuid4
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.staticfiles import StaticFiles
 from temporalio.service import RPCError, RPCStatusCode
 
 from reports.config import Settings, connect_temporal
@@ -26,6 +28,9 @@ def create_app(settings=None, store=None, temporal=None):
 
     app = FastAPI(title="Report example", lifespan=lifespan)
     bearer = HTTPBearer(auto_error=False)
+    app.mount(
+        "/ui", StaticFiles(directory=Path(__file__).parent / "ui", html=True), name="ui"
+    )
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(request, exc):

@@ -5,9 +5,26 @@ und [Temporal UI](https://workhorse.tail8fba42.ts.net:18444/) sind im Tailnet
 zugänglich. [.agents/infra/staging/coolify.md](.agents/infra/staging/coolify.md) enthält die Ressourcenübersicht;
 [deploy/staging.md](deploy/staging.md) beschreibt Konfiguration und Betrieb.
 Der API-Schlüssel wird gezielt aus dem Laufzeit-Secret `API_TOKEN` der
-API-Anwendung in Coolify abgerufen. Produktion auf Railway ist vorbereitet,
-aber noch nicht angelegt. Die Vorlage wird vor der Ableitung allgemeiner
-Development-MCP-Regeln praktisch erprobt.
+API-Anwendung in Coolify abgerufen. Produktion läuft auf Railway; Aufbau und
+offene Abnahmepunkte stehen in [deploy/production-setup.md](deploy/production-setup.md).
+Die Vorlage wird vor der Ableitung allgemeiner Development-MCP-Regeln praktisch
+erprobt.
+
+## Kleine Browseroberfläche
+
+Nach lokalem Start `http://127.0.0.1:18000/ui/` öffnen. Die Seite zeigt
+„Hello World“ und ein kleines Formular für Zahlen. Mit „Report erstellen“ startet
+sie einen Workflow und zeigt anschließend Anzahl, Summe, Minimum, Maximum und
+Mittelwert. Ein späteres „Status erneut prüfen“ lädt nur den angelegten Bericht.
+
+Lokal ist der API-Schlüssel optional. In Staging und Produktion den API-Schlüssel
+des jeweiligen API-Dienstes eingeben; er wird nicht dauerhaft im Browser
+abgelegt. Seite und Skripte enthalten keinen vorgegebenen Schlüssel. Die
+bestehende JSON-Route `/` und die API-Dokumentation `/docs` bleiben erhalten.
+Die öffentliche Produktionsoberfläche benötigt weiterhin gültiges HTTPS.
+
+Die UI-Dateien liegen im API-Image, also wird kein weiterer Container benötigt.
+Beim Laden der Seite werden keine Reports oder Dependency-Healthchecks abgefragt.
 
 ## Lokal starten
 

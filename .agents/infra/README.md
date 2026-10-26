@@ -21,7 +21,7 @@ Every component of the system and the artifact that runs it per environment.
 
 | Component | Purpose | Source | local | staging | production |
 | --- | --- | --- | --- | --- | --- |
-| api | Authenticated HTTP API that stores reports and starts their workflows | Image: `ghcr.io/harald2013/hello-world-api` | compose `api` | coolify `api` | railway `api` |
+| api | Authenticated HTTP API that stores reports and starts their workflows; also serves the static browser UI under `/ui/` | Image: `ghcr.io/harald2013/hello-world-api` | compose `api` | coolify `api` | railway `api` |
 | migration | One-off schema migration from the API image before the API starts | Image: `ghcr.io/harald2013/hello-world-api` | compose `migrate` | one-off container from the `api` image | railway `api` (pre-deploy) |
 | worker | Temporal worker that computes reports and writes results | Image: `ghcr.io/harald2013/hello-world-worker` | compose `worker` | coolify `worker` | railway `worker` |
 | backup | Scheduled job that dumps the database to object storage and prunes old dumps | Image: `ghcr.io/harald2013/hello-world-backup` | – | – | railway `backup` → cloudflare `report-example/production/` |
@@ -84,3 +84,5 @@ linked here; they are not live platform state.
 - [Production](../../deploy/production.md): Railway, Neon, Temporal Cloud and R2 setup
 - [Staging acceptance](../../deploy/staging-acceptance.md) and
   [production setup](../../deploy/production-setup.md): dated evidence
+- [UI rollout](../../deploy/ui-acceptance.md): dated evidence for the browser UI
+  in staging and production
