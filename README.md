@@ -24,3 +24,5 @@ Das Dockerfile enthält getrennte Build-Ziele für API, Worker und Backups.
 - [Staging](deploy/staging.md): für den Betrieb der Einzelimages auf workhorse lesen.
 - [Infrastruktur](.agents/infra/README.md): vor Zugriffen auf vorhandene Cloud-Ressourcen lesen.
 - [Architekturregeln](AGENT_RULES.md): vor Änderungen am Projekt lesen.
+
+Dummy-Zeile für einen Test-PR (kann gelöscht werden).
