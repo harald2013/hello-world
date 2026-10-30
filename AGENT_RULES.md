@@ -6,7 +6,7 @@
 - Workflow code MUST remain deterministic; database operations MUST run in retryable, idempotent activities [ADR 0003].
 - API and worker images MUST be built once per revision and promoted unchanged between environments [ADR 0003].
 - Local services MUST use Docker Compose and publish ports only on loopback [ADR 0003].
-- Production MUST use managed application hosting, Temporal Cloud, and Neon; it MUST NOT depend on workhorse [ADR 0003].
+- Production MUST use managed application hosting, Temporal Cloud, and Neon [ADR 0003].
 - Local and staging environments MUST use synthetic data and separate credentials from production [ADR 0003].
 - Runtime configuration MUST come from environment variables; secrets MUST NOT enter images, source control, or logs [ADR 0003].
 - Staging and production APIs MUST require an API token; production MUST enable Temporal TLS and database certificate verification [ADR 0003].
@@ -18,7 +18,6 @@
 - Staging applications MUST NOT publish host ports; Tailscale Serve MUST forward only to fixed container addresses in the project network [ADR 0008].
 - Staging tailnet ports MUST stay in the block 15100–15119 [ADR 0008].
 - Agents MUST run the schema job and authenticated staging checks as one-off Coolify tasks in the API container and MUST NOT read the API token out of Coolify [ADR 0008].
-- Agents MUST NOT start or delete the retired staging resources on workhorse without the user's decision [ADR 0008].
 - Production MUST NOT depend on wh-coolify [ADR 0008].
 
 ## Pre-deploy migrations — [ADR 0004](docs/adr/0004-pre-deploy-migrations.md)

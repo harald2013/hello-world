@@ -52,9 +52,7 @@ Feste Adressen im Projektnetz müssen vor jeder neuen Anwendung als frei geprüf
 werden; nach Deployments sind Serve-Ziel und Containeradresse gemeinsam zu
 prüfen. Das feste Subnetz wird am Host angelegt, bevor Coolify es als Ziel
 verwendet. Die Abweichung entfällt, sobald die installierte Coolify-Version
-Loopback-Bindings über ihre API unterstützt. Die bisherigen Ressourcen auf
-workhorse bleiben gestoppt mit ihren Volumes erhalten, bis ihre Löschung
-gesondert entschieden wird. Produktion ist weder von workhorse noch von
+Loopback-Bindings über ihre API unterstützt. Produktion ist nicht von
 wh-coolify abhängig.
 
 Die technischen Leitplanken stehen in der

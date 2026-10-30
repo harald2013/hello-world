@@ -125,10 +125,3 @@ Updateplan und ein vom Benutzer genehmigtes Wartungsfenster erforderlich.
 Automatische und Rolling-Updates ausschalten; ein explizites Image-Release
 verwenden. Die bestehende Stop-vor-Start-Vorgabe gilt weiterhin
 ([ADR 0005](../docs/adr/0005-stateful-staging-updates.md)).
-
-## Frühere Staging-Umgebung auf workhorse
-
-Bis 2026-10-30 lief Staging auf workhorse. Diese Anwendungen sind gestoppt,
-ihre Volumes einschließlich des nach dem Aufbauvorfall vom 2026-10-25
-unbenutzten Volumes bleiben zur Untersuchung erhalten. Ihre Zuordnung steht in
-`.agents/infra/staging/coolify.md`. Über ihre Löschung wird gesondert entschieden.
