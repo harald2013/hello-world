@@ -40,7 +40,7 @@ uv run python scripts/smoke.py
 ```
 
 See [README.md](README.md) for API usage and [deploy/](deploy/operations.md)
-for configuration. Staging uses individual images on workhorse. Production uses
+for configuration. Staging uses individual images on wh-coolify. Production uses
 managed application hosting, Temporal Cloud and Neon. The `System` table in
 [.agents/infra/README.md](.agents/infra/README.md) shows where each component
 runs per environment and links the inventories.

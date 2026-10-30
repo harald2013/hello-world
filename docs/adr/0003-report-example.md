@@ -1,6 +1,6 @@
 # ADR 0003: Berichtsgenerator als Vorlage für drei Betriebsumgebungen
 
-- Status: Akzeptiert
+- Status: Akzeptiert; Staging-Host durch [ADR 0008](0008-staging-on-wh-coolify.md) ersetzt
 - Datum: 2026-10-25
 - Geltungsbereich: Gesamtes Beispielprojekt und seine Betriebsumgebungen
 

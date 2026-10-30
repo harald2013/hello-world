@@ -1,11 +1,11 @@
 # Report example: Verwendung und Betrieb
 
-Staging ist auf workhorse eingerichtet: [API-Dokumentation](https://workhorse.tail8fba42.ts.net:18443/docs)
-und [Temporal UI](https://workhorse.tail8fba42.ts.net:18444/) sind im Tailnet
+Staging ist auf wh-coolify eingerichtet: [API-Dokumentation](https://wh-coolify.tail8fba42.ts.net:15100/docs)
+und [Temporal UI](https://wh-coolify.tail8fba42.ts.net:15101/) sind im Tailnet
 zugänglich. [.agents/infra/staging/coolify.md](.agents/infra/staging/coolify.md) enthält die Ressourcenübersicht;
 [deploy/staging.md](deploy/staging.md) beschreibt Konfiguration und Betrieb.
-Der API-Schlüssel wird gezielt aus dem Laufzeit-Secret `API_TOKEN` der
-API-Anwendung in Coolify abgerufen. Produktion läuft auf Railway; Aufbau und
+Der API-Schlüssel ist die Shared Variable `API_TOKEN` der Umgebung `staging`
+in Coolify; nur bei Bedarf gezielt dort abrufen. Produktion läuft auf Railway; Aufbau und
 offene Abnahmepunkte stehen in [deploy/production-setup.md](deploy/production-setup.md).
 Die Vorlage wird vor der Ableitung allgemeiner Development-MCP-Regeln praktisch
 erprobt.

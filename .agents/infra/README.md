@@ -11,7 +11,7 @@ environment, in `.agents/infra/shared/<tool>.md`. Never store secrets.
 | Environment | Purpose | Branch |
 | --- | --- | --- |
 | local | Synthetic-data stack from `compose.yml`; never deployed | feature branch |
-| staging | Individual images on workhorse with synthetic data | image tags `sha-<commit>` from `main` or `feature/**` |
+| staging | Individual images on wh-coolify with synthetic data | image tags `sha-<commit>` from `main` or `feature/**` |
 | production | Railway, Neon, Temporal Cloud and Cloudflare R2 | main |
 
 ## System
@@ -22,7 +22,7 @@ Every component of the system and the artifact that runs it per environment.
 | Component | Purpose | Source | local | staging | production |
 | --- | --- | --- | --- | --- | --- |
 | api | Authenticated HTTP API that stores reports and starts their workflows; also serves the static browser UI under `/ui/` | Image: `ghcr.io/harald2013/report-example-api` | compose `api` | coolify `api` | railway `api` |
-| migration | One-off schema migration from the API image before the API starts | Image: `ghcr.io/harald2013/report-example-api` | compose `migrate` | one-off container from the `api` image | railway `api` (pre-deploy) |
+| migration | One-off schema migration from the API image before the API starts | Image: `ghcr.io/harald2013/report-example-api` | compose `migrate` | one-off coolify task in the `api` container | railway `api` (pre-deploy) |
 | worker | Temporal worker that computes reports and writes results | Image: `ghcr.io/harald2013/report-example-worker` | compose `worker` | coolify `worker` | railway `worker` |
 | backup | Scheduled job that dumps the database to object storage and prunes old dumps | Image: `ghcr.io/harald2013/report-example-backup` | – | – | railway `backup` → cloudflare `report-example/production/` |
 | database | PostgreSQL for reports | Image: `postgres` / Managed: neon | compose `postgres` | coolify `postgres` | neon `reports` |
@@ -39,7 +39,7 @@ Every component of the system and the artifact that runs it per environment.
 | production | temporal | Temporal Cloud | `temporal-cloud` | [production/temporal.md](production/temporal.md) |
 | production | cloudflare | Cloudflare account, R2 EU | none; S3 | [production/cloudflare.md](production/cloudflare.md) |
 | production | world4you | Customer account, zone ratzberger.net | none; web interface | [production/world4you.md](production/world4you.md) |
-| staging | coolify | Instance workhorse, server localhost | `coolify-workhorse` | [staging/coolify.md](staging/coolify.md) |
+| staging | coolify | Instance wh-coolify, server localhost | `coolify-wh-coolify` | [staging/coolify.md](staging/coolify.md) |
 | shared | github | Account harald2013 | none, `gh` CLI | [shared/github.md](shared/github.md) |
 | shared | linear | Workspace tilia-at, team Tilia | `linear` | [shared/linear.md](shared/linear.md) |
 
@@ -51,11 +51,11 @@ Every component of the system and the artifact that runs it per environment.
   `ghcr.io/harald2013/report-example-api` and
   `ghcr.io/harald2013/report-example-worker`; the Coolify applications `api` and
   `worker` run these image repositories.
-- API https://workhorse.tail8fba42.ts.net:18443/ and Temporal UI
-  https://workhorse.tail8fba42.ts.net:18444/ are tailnet-only through
-  Tailscale Serve.
-- The bearer token is the runtime secret `API_TOKEN` of the Coolify
-  application `api`; read it there only when needed.
+- API https://wh-coolify.tail8fba42.ts.net:15100/ and Temporal UI
+  https://wh-coolify.tail8fba42.ts.net:15101/ are tailnet-only through
+  Tailscale Serve to fixed container addresses.
+- The bearer token is the shared variable `API_TOKEN` of the Coolify
+  environment `staging`; use it inside the API container instead of reading it.
 
 ### shared
 
