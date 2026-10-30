@@ -11,7 +11,7 @@ URL: http://wh-coolify:8000/
 
 Reach this instance through MCP Jungle under the server name `coolify-wh-coolify`. Its tools are named `coolify-wh-coolify__…`.
 
-The objects below nest. The server runs the applications. The project contains the environment. The environment contains the resources.
+The objects below nest. The server runs the applications. The project contains the environment. The environment contains the resources. Each resource is assigned to one destination, a Docker network that Coolify manages on one server.
 
 ```
 wh-coolify
@@ -25,13 +25,19 @@ wh-coolify
             └── worker
 ```
 
-The resources are on the Docker network `report-example-staging` (`ob9mjye7qpm4k1ytlvdwongd`).
-
 ### Servers
 
 | Name | UUID | Description |
 | --- | --- | --- |
 | localhost | kisymismhd6tci7xrbjb1r1y | wh-coolify, reachable at host.docker.internal |
+
+### Destinations
+
+The UUID identifies the destination in the Coolify API and MCP tools; it is not the Docker network ID. The destination name and the Docker network name differ. The server's default destination `coolify` belongs to project IDP and is documented in the idp repository.
+
+| Name | UUID | Server | Docker network | Description |
+| --- | --- | --- | --- | --- |
+| localhost-report-example-staging | ob9mjye7qpm4k1ytlvdwongd | localhost | `report-example-staging` | Own destination of this project; fixed subnet `172.30.0.0/24`; all staging resources |
 
 ### Projects
 
@@ -47,17 +53,16 @@ The resources are on the Docker network `report-example-staging` (`ob9mjye7qpm4k
 
 ### Resources
 
-| Name | UUID | Kind | Deployment | Description |
-| --- | --- | --- | --- | --- |
-| postgres | 1gvjtntleypij9lvcfdid5yk | application | Image: `postgres` | Staging postgres; network alias `report-postgres`; not exposed |
-| temporal | uf0runx9tuaasz0boge5mpb2 | application | Image: `temporalio/auto-setup` | Staging temporal; network alias `report-temporal`; not exposed |
-| temporal-ui | ggb4ntoezlha1g7arkrkvmvy | application | Image: `temporalio/ui` | Temporal UI; network alias `report-temporal-ui`; https://wh-coolify.tail8fba42.ts.net:15101/ (tailnet only) |
-| api | mtyncf8p2yaqsnjyg72adga6 | application | Image: `ghcr.io/harald2013/report-example-api` | Staging API; network alias `report-api`; https://wh-coolify.tail8fba42.ts.net:15100/ (tailnet only) |
-| worker | ekvdn0bmgy3bilxcnvgamcvt | application | Image: `ghcr.io/harald2013/report-example-worker` | Staging worker; network alias `report-worker`; not exposed |
+| Name | UUID | Kind | Destination | Deployment | Description |
+| --- | --- | --- | --- | --- | --- |
+| postgres | 1gvjtntleypij9lvcfdid5yk | application | localhost-report-example-staging | Image: `postgres` | Staging postgres; network alias `report-postgres`; not exposed |
+| temporal | uf0runx9tuaasz0boge5mpb2 | application | localhost-report-example-staging | Image: `temporalio/auto-setup` | Staging temporal; network alias `report-temporal`; not exposed |
+| temporal-ui | ggb4ntoezlha1g7arkrkvmvy | application | localhost-report-example-staging | Image: `temporalio/ui` | Temporal UI; network alias `report-temporal-ui`; https://wh-coolify.tail8fba42.ts.net:15101/ (tailnet only) |
+| api | mtyncf8p2yaqsnjyg72adga6 | application | localhost-report-example-staging | Image: `ghcr.io/harald2013/report-example-api` | Staging API; network alias `report-api`; https://wh-coolify.tail8fba42.ts.net:15100/ (tailnet only) |
+| worker | ekvdn0bmgy3bilxcnvgamcvt | application | localhost-report-example-staging | Image: `ghcr.io/harald2013/report-example-worker` | Staging worker; network alias `report-worker`; not exposed |
 
 ## Project additions
 
-The network `report-example-staging` has the fixed subnet `172.30.0.0/24`.
 No application publishes a host port. Tailscale Serve on wh-coolify forwards
 to fixed container addresses, set as `--ip` in the custom Docker options:
 
