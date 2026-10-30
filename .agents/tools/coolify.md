@@ -7,10 +7,12 @@ Identifiers and structure per environment live in `.agents/infra/`.
 
 ## Access
 
-- Interface: Coolify MCP through MCP Jungle, server `coolify-workhorse`, and
-  the Coolify API where the MCP lacks a field
+- Interface: Coolify MCP through MCP Jungle, server `coolify-wh-coolify`; the
+  Coolify UI for fields the MCP does not send
 - Authentication: Coolify API token
 - Credential source: MCP Jungle configuration
+- Host steps on wh-coolify (Docker networks, Tailscale Serve) are done by the
+  user; agents have no SSH access there
 
 ## Common tasks
 
@@ -21,8 +23,8 @@ projects or applications.
 
 ### Check all staging applications at once
 
-`environments(action="get", project_uuid="paxi2fhovbegez4lh7gxdgjj", name="staging")`
-returns every application with image, network alias and port mapping.
+`environments(action="get", project_uuid="mxu2fn0yhgpp6xfooibg56ru", name="staging")`
+returns every application with image, network alias and Docker options.
 
 ### Update an image version
 
@@ -30,16 +32,32 @@ Read the application live with `get_application(uuid=<uuid>)`, change only
 the image tag, deploy, and verify the result in Coolify. Version-only changes
 do not touch the inventory.
 
-### Check staging without exporting the API token
+### Run a command in the API container
 
-Read the public UI assets over the tailnet HTTPS URL. For authenticated report
-checks, use SSH workhorse and docker exec inside the unique API container; read
-API_TOKEN only from that container's environment and keep it out of stdout.
+`scheduled_tasks(action="run_once", resource="application", uuid=<api>,
+container="api", command=...)` runs a one-off command and returns its stdout.
+Use it for the schema job (`python -m reports.store`) and for authenticated
+checks that read `API_TOKEN` from the container environment, so the token
+never reaches stdout. Commands are limited to 255 characters and may run more
+than once; keep them idempotent.
+
+### Check staging without the API token
+
+Read `/ready` and `/ui/` over the tailnet HTTPS URL. An unauthenticated
+`POST /reports` must return 401.
 
 ## Pitfalls
 
-- The MCP tool supports neither `ports_mappings` nor command health checks;
-  see [staging](../../deploy/staging.md#konfiguration-der-installierten-coolify-version).
+- `create_dockerimage` assigns a public sslip.io domain; clear it with
+  `update(domains="")` right after creation.
+- `env_vars` `bulk_update` returns resolved values of shared-variable
+  references; create variables one by one with `create`, which returns only
+  the UUID.
+- The MCP drops `health_check_type`, `health_check_command` and
+  `is_consistent_container_name_enabled`; set them in the Coolify UI and read
+  them back with `get_application`.
+- The Coolify API rejects IP-prefixed `ports_mappings`; publish no host ports
+  and use the fixed container addresses from the inventory.
 - Stop PostgreSQL before replacing it; never run two PostgreSQL containers
   against the same volume.
 - Never publish ports on all host interfaces, not even temporarily.
@@ -50,3 +68,4 @@ API_TOKEN only from that container's environment and keep it out of stdout.
 
 - [Staging](../../deploy/staging.md)
 - [ADR 0005](../../docs/adr/0005-stateful-staging-updates.md)
+- [ADR 0008](../../docs/adr/0008-staging-on-wh-coolify.md)

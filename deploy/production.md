@@ -2,7 +2,7 @@
 
 [ADR 0006](../docs/adr/0006-railway-production.md) legt das aktuelle Zielbild fest.
 Render entfällt vollständig. Railway betreibt drei getrennte vorgebaute Images:
-API, Worker und einen beendenden Backup-Job. Staging bleibt auf workhorse.
+API, Worker und einen beendenden Backup-Job. Staging läuft auf wh-coolify.
 
 ## Gewählte Betriebsparameter
 
