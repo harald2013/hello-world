@@ -24,8 +24,6 @@ Report-Aufruf liefert 401. Ein authentifizierter Bericht wurde innerhalb des
 API-Containers gestartet, ohne den Schlüssel auszulesen oder auszugeben.
 Report `674f0373-51c8-40d1-867b-f1fb791a90b9` wird fertig, Summe 60 und Mittelwert 20.
 
-UI: https://workhorse.tail8fba42.ts.net:18443/ui/
-
 ## Produktion
 
 Die API wird zuerst mit nativer Pre-Deploy-Migration aktualisiert. Erst nach

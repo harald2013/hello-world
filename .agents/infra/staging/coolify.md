@@ -89,11 +89,3 @@ braces.
 | POSTGRES_PASSWORD | shared | yes | Coolify shared variable; postgres `POSTGRES_PASSWORD`, temporal `POSTGRES_PWD` |
 | DATABASE_URL | shared | yes | Coolify shared variable; api, worker |
 | API_TOKEN | shared | yes | Coolify shared variable; api, worker |
-
-### Retired instance workhorse
-
-The former staging project `report-example` (`paxi2fhovbegez4lh7gxdgjj`) on
-workhorse is stopped, not deleted. Its PostgreSQL volumes
-`report-example-postgres-data-v2` and
-`fsew7ydowsjgjbbnickyi65b-report-example-postgres-data` are retained. Do not
-start these applications; their deletion is a separate decision.
