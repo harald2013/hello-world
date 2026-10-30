@@ -39,7 +39,7 @@ Every component of the system and the artifact that runs it per environment.
 | production | temporal | Temporal Cloud | `temporal-cloud` | [production/temporal.md](production/temporal.md) |
 | production | cloudflare | Cloudflare account, R2 EU | none; S3 | [production/cloudflare.md](production/cloudflare.md) |
 | production | world4you | Customer account, zone ratzberger.net | none; web interface | [production/world4you.md](production/world4you.md) |
-| staging | coolify | Instance wh-coolify, server localhost | `coolify-wh-coolify` | [staging/coolify.md](staging/coolify.md) |
+| staging | coolify | Instance wh-coolify, server localhost, destination localhost-report-example-staging | `coolify-wh-coolify` | [staging/coolify.md](staging/coolify.md) |
 | shared | github | Account harald2013 | none, `gh` CLI | [shared/github.md](shared/github.md) |
 | shared | linear | Workspace tilia-at, team Tilia | `linear` | [shared/linear.md](shared/linear.md) |
 
@@ -47,6 +47,11 @@ Every component of the system and the artifact that runs it per environment.
 
 ### staging
 
+- All staging applications use the Coolify destination
+  `localhost-report-example-staging` (Docker network `report-example-staging`)
+  on wh-coolify and reach each other through their network aliases. They share
+  no network with the IDP resources on the same server
+  ([staging/coolify.md](staging/coolify.md#destinations)).
 - The workflow `Report example · Container images` publishes
   `ghcr.io/harald2013/report-example-api` and
   `ghcr.io/harald2013/report-example-worker`; the Coolify applications `api` and
