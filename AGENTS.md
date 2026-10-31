@@ -9,7 +9,7 @@ Read inherited and active-scope rules when working in a module. Load the linked
 German ADRs only when you need the rationale or are reviewing a decision.
 
 Before planning or changing infrastructure or architecture, call the
-`development-mcp` MCP's `server_guide` and then `get_agent_rules`.
+`development-mcp` MCP's `workflow_get_guide` and then `get_agent_rules`.
 Apply the returned rules for the domains used by this project.
 
 ## Overview
@@ -80,7 +80,7 @@ changes, also run the Compose smoke test. Workflow changes require history repla
 ## Workflow
 
 - Tickets are Linear issues with the `TIL-<number>` prefix.
-- Follow the development MCP `prepare-workspace` instructions to create a
+- Follow the development MCP `workflow_get_prepare_workspace` instructions to create a
   dedicated ticket worktree next to the reference checkout. Do not edit the
   reference checkout or another person's worktree; do not put worktrees in `/tmp`.
 - Work on a branch `feature/<ticket>-<short-feature-name>`, e.g.
