@@ -14,9 +14,7 @@
 
 ## Staging on wh-coolify — [ADR 0008](docs/adr/0008-staging-on-wh-coolify.md)
 
-- Staging MUST deploy individual images through Coolify on wh-coolify in the project network `report-example-staging` and MUST NOT use Compose [ADR 0008].
-- Staging applications MUST NOT publish host ports; Tailscale Serve MUST forward only to fixed container addresses in the project network [ADR 0008].
-- Staging tailnet ports MUST stay in the block 15100–15119 [ADR 0008].
+- Staging MUST run on the Coolify instance wh-coolify in the project network `report-example-staging` [ADR 0008].
 - Agents MUST run the schema job and authenticated staging checks as one-off Coolify tasks in the API container and MUST NOT read the API token out of Coolify [ADR 0008].
 - Production MUST NOT depend on wh-coolify [ADR 0008].
 

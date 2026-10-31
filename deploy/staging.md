@@ -13,9 +13,11 @@ PostgreSQL erhält ein eigenes persistentes Volume.
 API: https://wh-coolify.tail8fba42.ts.net:15100/docs  
 Temporal UI: https://wh-coolify.tail8fba42.ts.net:15101/
 
-Beide Adressen sind nur im Tailnet erreichbar. Keine Anwendung bindet einen
-Host-Port. Tailscale Serve auf wh-coolify leitet direkt an die festen Adressen
-von API und Temporal UI im Projektnetz weiter. PostgreSQL, Temporal und Worker
+Beide Adressen sind nur im Tailnet erreichbar. Staging verwendet die Variante
+mit fester Container-Adresse aus ADR-reference-architecture-staging des
+Development MCP; keine Anwendung bindet einen Host-Port. Tailscale Serve auf
+wh-coolify leitet direkt an die festen Adressen von API und Temporal UI im
+Projektnetz weiter. PostgreSQL, Temporal und Worker
 haben weder Serve-Route noch öffentliche Domain. Der API-Schlüssel liegt als
 Shared Variable `API_TOKEN` an der Umgebung; Prüfungen verwenden ihn im
 API-Container, statt ihn aus Coolify auszulesen.
@@ -116,9 +118,6 @@ der Aufbau als regelkonform bezeichnet werden kann. Dazu sind auch die
 bisherigen projektweiten Migrationsregeln und ihr ADR gemeinsam anzupassen.
 Railways Migration aus dem neuen Image in der nativen Pre-Deploy-Phase bleibt
 der vorgesehene Produktionsablauf.
-
-Die Bindung an feste Containeradressen statt an Loopback-Ports ist in
-[ADR 0008](../docs/adr/0008-staging-on-wh-coolify.md) begründet.
 
 Für Updates des selbst betriebenen PostgreSQL sind außerdem ein getesteter
 Updateplan und ein vom Benutzer genehmigtes Wartungsfenster erforderlich.
