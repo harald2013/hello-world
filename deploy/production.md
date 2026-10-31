@@ -50,9 +50,10 @@ separat erfasst. Ein angelegter Dienst ist noch kein erfolgreiches Deployment.
    Ownership-TXT-Einträge bei World4You setzen und TLS-Status prüfen.
 
 `/ready` prüft Neon und Temporal; Railway fragt ihn nur beim Deployment ab.
-Für häufige externe Prozessüberwachung `/health` verwenden. Das Suspend-Verhalten
-und die Compute-Auslastung in Neon vor Freigabe prüfen: ein dauerhaft aktiver
-0.25-CU-Endpoint überschreitet im vollen Monat das kostenlose Kontingent.
+Für häufige externe Prozessüberwachung `/health` verwenden. Neon Free suspendiert
+den Endpoint nach 5 Minuten ohne Abfragen; ein dauerhaft aktiver 0.25-CU-Endpoint
+überschreitet im vollen Monat das kostenlose Kontingent. Verbrauch und
+Hochrechnung: [neon-compute-acceptance.md](neon-compute-acceptance.md).
 
 ## Backup und Wiederherstellung
 
