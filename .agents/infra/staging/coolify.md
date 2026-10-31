@@ -9,6 +9,10 @@ A UUID is the identifier Coolify uses in its API and MCP tools.
 
 URL: http://wh-coolify:8000/
 
+Port register: [Port blocks on wh-coolify](https://github.com/harald2013/idp/blob/main/.agents/infra/production/coolify.md#port-blocks-on-wh-coolify) in the idp repository
+
+The port register lists the blocks of host and Serve ports reserved per project and service on this instance; the repository that operates the instance maintains it.
+
 Reach this instance through MCP Jungle under the server name `coolify-wh-coolify`. Its tools are named `coolify-wh-coolify__…`.
 
 The objects below nest. The server runs the applications. The project contains the environment. The environment contains the resources. Each resource is assigned to one destination, a Docker network that Coolify manages on one server.
@@ -57,34 +61,15 @@ The UUID identifies the destination in the Coolify API and MCP tools; it is not 
 | --- | --- | --- | --- | --- | --- |
 | postgres | 1gvjtntleypij9lvcfdid5yk | application | localhost-report-example-staging | Image: `postgres` | Staging postgres; network alias `report-postgres`; not exposed |
 | temporal | uf0runx9tuaasz0boge5mpb2 | application | localhost-report-example-staging | Image: `temporalio/auto-setup` | Staging temporal; network alias `report-temporal`; not exposed |
-| temporal-ui | ggb4ntoezlha1g7arkrkvmvy | application | localhost-report-example-staging | Image: `temporalio/ui` | Temporal UI; network alias `report-temporal-ui`; https://wh-coolify.tail8fba42.ts.net:15101/ (tailnet only) |
-| api | mtyncf8p2yaqsnjyg72adga6 | application | localhost-report-example-staging | Image: `ghcr.io/harald2013/report-example-api` | Staging API; network alias `report-api`; https://wh-coolify.tail8fba42.ts.net:15100/ (tailnet only) |
+| temporal-ui | ggb4ntoezlha1g7arkrkvmvy | application | localhost-report-example-staging | Image: `temporalio/ui` | Temporal UI; network alias `report-temporal-ui`; https://wh-coolify.tail8fba42.ts.net:15101/ (tailnet only); fixed address `172.30.0.12`; Tailscale Serve `15101` → `172.30.0.12:8080` |
+| api | mtyncf8p2yaqsnjyg72adga6 | application | localhost-report-example-staging | Image: `ghcr.io/harald2013/report-example-api` | Staging API; network alias `report-api`; https://wh-coolify.tail8fba42.ts.net:15100/ (tailnet only); fixed address `172.30.0.13`; Tailscale Serve `15100` → `172.30.0.13:8000` |
 | worker | ekvdn0bmgy3bilxcnvgamcvt | application | localhost-report-example-staging | Image: `ghcr.io/harald2013/report-example-worker` | Staging worker; network alias `report-worker`; not exposed |
 
-## Project additions
+## Configuration
 
-No application publishes a host port. Tailscale Serve on wh-coolify forwards
-to fixed container addresses, set as `--ip` in the custom Docker options:
+Shared variables of the environment `staging`; the applications reference them.
 
-| Resource | Address | Tailnet port |
-| --- | --- | --- |
-| api | 172.30.0.13:8000 | 15100 |
-| temporal-ui | 172.30.0.12:8080 | 15101 |
-
-The tailnet ports use the block 15100–15119.
-
-PostgreSQL uses the persistent volume
-`1gvjtntleypij9lvcfdid5yk-report-example-postgres-data` (storage UUID
-`cgccmjqd5a0ebmcpw3fdrhnx`) at `/var/lib/postgresql/data`. PostgreSQL uses
-consistent container naming and must stop before replacement.
-
-### Configuration
-
-Shared variables of the environment `staging`; each application variable
-references them through Coolify's `environment.<NAME>` reference in double
-braces.
-
-| Name | Scope | Secret | Source |
+| Variable | Scope | Secret | Source |
 | --- | --- | --- | --- |
 | APP_ENV | shared | no | Coolify shared variable |
 | TEMPORAL_ADDRESS | shared | no | Coolify shared variable |
@@ -94,3 +79,10 @@ braces.
 | POSTGRES_PASSWORD | shared | yes | Coolify shared variable; postgres `POSTGRES_PASSWORD`, temporal `POSTGRES_PWD` |
 | DATABASE_URL | shared | yes | Coolify shared variable; api, worker |
 | API_TOKEN | shared | yes | Coolify shared variable; api, worker |
+
+## Project additions
+
+PostgreSQL uses the persistent volume
+`1gvjtntleypij9lvcfdid5yk-report-example-postgres-data` (storage UUID
+`cgccmjqd5a0ebmcpw3fdrhnx`) at `/var/lib/postgresql/data`. PostgreSQL uses
+consistent container naming and must stop before replacement.
