@@ -86,12 +86,43 @@ HTTPS-Aufruf bestätigt einen Hostname-Mismatch; die Zertifikatsprüfung bleibt
 aktiv. HTTP-Smoke und öffentliche Freigabe warten deshalb auf ein gültiges
 Zertifikat. Nicht wiederholt neu anfordern, solange Railway keinen Retry erlaubt. Der TXT-Wert ist ein öffentlicher DNS-Nachweis, kein API-Secret.
 
+## Reguläre Cron-Läufe am 2026-10-31
+
+Seit dem Wechsel auf
+`ghcr.io/harald2013/report-example-backup@sha256:169d9a8cf6bd7f8b25ae805e7f30edf057cf841285e41d416fccb0b5f333c4d0`
+(Backup-Deployment `84b6148d-1f6c-40bf-a2f5-0a9e03c0d1c3`, siehe
+[rename-acceptance.md](rename-acceptance.md)) liefen alle zehn regulären
+Cron-Läufe von 2026-10-26 12:00 UTC bis 2026-10-31 00:00 UTC. Jeder Lauf meldet
+in den Railway-Ausführungslogs `Starting Container` und wenige Sekunden später
+`Backup completed`. `ops/backup.py` meldet das erst nach dem Upload und einer
+`head_object`-Prüfung des abgelegten Archivs. Die Startzeit schwankt um bis zu
+fünf Minuten nach der vollen Stunde. Die einzelnen R2-Objekte wurden für diesen
+Nachweis nicht separat gelistet.
+
 ## Offene Abnahme
 
-Authentifizierter HTTP-Report über die eigene Domain, Fehler- und Backup-
-Frischealarme sowie Release-Fehlerisolation in einer separaten Testumgebung
-stehen aus. Upload und isolierte Wiederherstellungsprobe sind nachgewiesen. Die 24-Stunden-Ziele sind daher noch
-nicht als erfüllt nachgewiesen. Keine Fehlermigration gegen Produktion ausführen.
+Stand 2026-10-31. Die Punkte sind in Linear als eigene Tickets geführt; die
+allgemeinen Tickets gelten für alle Projekte, report-example ist jeweils der
+erste Anwendungsfall.
+
+| Punkt | Ticket |
+| --- | --- |
+| Gültiges TLS-Zertifikat für `api.report-example.ratzberger.net` | TIL-212 |
+| Authentifizierter HTTP-Report über die eigene Domain, ohne Token 401 (wartet auf TIL-212) | TIL-178 |
+| Railway-Fehleralarme für fehlgeschlagene Deployments und Abstürze | TIL-213 |
+| Alarm bei ausbleibenden Backups, bevor das jüngste Backup 24 Stunden alt ist | TIL-214 |
+| Release-Fehlerisolation in einer separaten Testumgebung | TIL-215 |
+| Eigener Temporal-Namespace oder per ADR entschiedene Abweichung | TIL-216 |
+| Fehlende Plan-Angaben in den Inventaren | TIL-217 |
+| Neon Auto-Suspend und Compute-Kontingent | TIL-218 |
+| Branch-Schutz für `main` und Prüfung des öffentlichen Repos auf sensible Angaben | TIL-219 |
+
+Upload, reguläre Cron-Läufe und isolierte Wiederherstellungsprobe sind
+nachgewiesen. Die 24-Stunden-Ziele gelten erst mit dem Alarm aus TIL-214 als
+erfüllt. Keine Fehlermigration gegen Produktion ausführen.
+
+Die Produktion gilt als abgenommen, wenn diese Tabelle leer ist; dann hier mit
+Datum vermerken.
 
 ## UI-Aktualisierung
 
