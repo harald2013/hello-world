@@ -9,7 +9,7 @@ Read inherited and active-scope rules when working in a module. Load the linked
 German ADRs only when you need the rationale or are reviewing a decision.
 
 Before planning or changing infrastructure or architecture, call the
-`development-mcp` MCP's `server_guide` and then `get_agent_rules`.
+`development-mcp` MCP's `workflow_get_guide` and then `get_agent_rules`.
 Apply the returned rules for the domains used by this project.
 
 ## Overview
