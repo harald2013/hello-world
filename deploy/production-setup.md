@@ -113,8 +113,6 @@ erste Anwendungsfall.
 | Alarm bei ausbleibenden Backups, bevor das jüngste Backup 24 Stunden alt ist | TIL-214 |
 | Release-Fehlerisolation in einer separaten Testumgebung | TIL-215 |
 | Eigener Temporal-Namespace oder per ADR entschiedene Abweichung | TIL-216 |
-| Fehlende Plan-Angaben in den Inventaren | TIL-217 |
-| Neon Auto-Suspend und Compute-Kontingent | TIL-218 |
 | Branch-Schutz für `main` und Prüfung des öffentlichen Repos auf sensible Angaben | TIL-219 |
 
 Upload, reguläre Cron-Läufe und isolierte Wiederherstellungsprobe sind

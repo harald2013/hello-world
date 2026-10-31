@@ -1,7 +1,8 @@
 # Neon Auto-Suspend und Compute-Kontingent am 2026-10-31
 
-Ticket TIL-218. Alle Werte wurden am 2026-10-31 zwischen 14:28 und 14:45 UTC live
-und nur lesend über den Neon-MCP und den Railway-MCP abgefragt. Projekt
+Ticket TIL-218. Alle Werte wurden am 2026-10-31 zwischen 14:28:39 UTC
+(Linear-Startkommentar) und 14:33:51 UTC (Commit dieses Nachweises) live und nur
+lesend über den Neon-MCP und den Railway-MCP abgefragt. Projekt
 `raspy-bar-83546186`, Endpoint `ep-weathered-rain-b9sk6ls0`, Plan Free
 (`free_v3`). IDs stehen im [Neon-Inventar](../.agents/infra/production/neon.md).
 
