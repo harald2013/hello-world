@@ -1,5 +1,6 @@
 import asyncio
 import secrets
+import tomllib
 from contextlib import asynccontextmanager
 from datetime import timedelta
 from pathlib import Path
@@ -17,6 +18,8 @@ from reports.models import ReportInput, ReportJob
 from reports.store import Store
 from reports.workflows import ReportWorkflow
 
+PYPROJECT = Path(__file__).parent.parent / "pyproject.toml"
+
 
 def create_app(settings=None, store=None, temporal=None):
     @asynccontextmanager
@@ -27,6 +30,8 @@ def create_app(settings=None, store=None, temporal=None):
         yield
 
     app = FastAPI(title="Report example", lifespan=lifespan)
+    project = tomllib.loads(PYPROJECT.read_text())["project"]
+    package = {"name": project["name"], "version": project["version"]}
     bearer = HTTPBearer(auto_error=False)
     app.mount(
         "/ui", StaticFiles(directory=Path(__file__).parent / "ui", html=True), name="ui"
@@ -60,6 +65,10 @@ def create_app(settings=None, store=None, temporal=None):
     @app.get("/health")
     async def health():
         return {"status": "ok"}
+
+    @app.get("/version")
+    async def version():
+        return package
 
     @app.get("/ready")
     async def ready():
