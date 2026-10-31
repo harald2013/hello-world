@@ -80,7 +80,7 @@ changes, also run the Compose smoke test. Workflow changes require history repla
 ## Workflow
 
 - Tickets are Linear issues with the `TIL-<number>` prefix.
-- Follow the development MCP `prepare-workspace` instructions to create a
+- Follow the development MCP `workflow_get_prepare_workspace` instructions to create a
   dedicated ticket worktree next to the reference checkout. Do not edit the
   reference checkout or another person's worktree; do not put worktrees in `/tmp`.
 - Work on a branch `feature/<ticket>-<short-feature-name>`, e.g.
