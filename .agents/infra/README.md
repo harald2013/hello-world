@@ -93,3 +93,5 @@ linked here; they are not live platform state.
   in staging and production
 - [Rename to report-example](../../deploy/rename-acceptance.md): dated evidence
   for the switch to the renamed image repositories
+- [Neon compute check](../../deploy/neon-compute-acceptance.md): dated evidence
+  for Neon scale to zero and the Free compute allowance
