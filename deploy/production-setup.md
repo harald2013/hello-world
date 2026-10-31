@@ -108,7 +108,7 @@ erste Anwendungsfall.
 | Punkt | Ticket |
 | --- | --- |
 | Gültiges TLS-Zertifikat für `api.report-example.ratzberger.net` | TIL-212 |
-| Authentifizierter HTTP-Report über die eigene Domain, ohne Token 401 (wartet auf TIL-212) | TIL-178 |
+| Authentifizierter HTTP-Report über die eigene Domain, ohne Token 401 (wartet auf TIL-212) | TIL-220 |
 | Railway-Fehleralarme für fehlgeschlagene Deployments und Abstürze | TIL-213 |
 | Alarm bei ausbleibenden Backups, bevor das jüngste Backup 24 Stunden alt ist | TIL-214 |
 | Release-Fehlerisolation in einer separaten Testumgebung | TIL-215 |
