@@ -1,3 +1,5 @@
+import tomllib
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
@@ -63,6 +65,15 @@ def test_authentication_and_public_health(client):
     client.headers.pop("Authorization")
     assert client.post("/reports", json={"values": [1]}).status_code == 401
     assert client.get("/health").status_code == 200
+
+
+def test_public_version_reports_project_metadata(client):
+    client.headers.pop("Authorization")
+    pyproject = Path(__file__).parent.parent / "pyproject.toml"
+    project = tomllib.loads(pyproject.read_text())["project"]
+    response = client.get("/version")
+    assert response.status_code == 200
+    assert response.json() == {"name": project["name"], "version": project["version"]}
 
 
 def test_nonfinite_json_returns_validation_error_without_echo(client):
