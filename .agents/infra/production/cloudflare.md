@@ -3,7 +3,7 @@
 ## Instance
 
 - Instance or account: Cloudflare account (`960c285a06dcb6cb9a4f8212c9b5ae46`), supplied by the user
-- Plan and region: plan not recorded, read it in the dashboard; R2 EU jurisdiction
+- Plan and region: Workers Free and R2 Paid, no other subscriptions; no zone plan, DNS is hosted at World4You; R2 EU jurisdiction
 - URL: https://dash.cloudflare.com
 - MCP server: none; S3 access from the Railway service `backup`
 

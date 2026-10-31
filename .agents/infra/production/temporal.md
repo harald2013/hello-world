@@ -3,7 +3,7 @@
 ## Instance
 
 - Instance or account: Temporal Cloud account of the user; namespace supplied by the user
-- Plan and region: not visible to agents; read them in the Temporal Cloud console
+- Plan and region: Developer; AWS `eu-central-1`
 - URL: https://cloud.temporal.io
 - MCP server: `temporal-cloud`, tools named `temporal_cloud__…`
 

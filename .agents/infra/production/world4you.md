@@ -3,7 +3,7 @@
 ## Instance
 
 - Instance or account: World4You customer account of the user (ID not recorded)
-- Plan and region: not recorded; DNS hosting of `ratzberger.net`
+- Plan and region: tariff for mail and domain only; DNS hosting of `ratzberger.net`
 - URL: https://www.world4you.com
 - MCP server: none; records are changed by the user in the web interface
 
